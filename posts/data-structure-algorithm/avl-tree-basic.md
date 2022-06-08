@@ -34,8 +34,8 @@ AVL 树是最早被发明的自平衡的二叉查找树，在 AVL 树中，任�
 typeof struct AVLNode {
     struct AVLNode *left;       // 左子树
     struct AVLNode *right;      // 右子树
-    int height;         		// 当前结点的高度
-    int value;          		// 当前结点的值
+    int height;                 // 当前结点的高度
+    int value;                  // 当前结点的值
 }
 ```
 

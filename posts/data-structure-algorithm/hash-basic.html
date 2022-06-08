@@ -10,8 +10,8 @@
     return (h ^ (h &gt;&gt;&gt; 16)) &amp; (capitity -1);
 }
 </code></pre><p>在 Java 中，<code>hashCode()</code> 方法通过将对象的物理地址转换为一个整数，再将整数通过哈希算法计算得到哈希码，这个哈希码是一个 32 位的带符号整数值，正常情况下很难发生碰撞。</p><p>为了让这个哈希码与 HashMap 的底层数组做映射，Java 还会将这个哈希码再次做哈希操作，采用的方法是：</p><ol><li>将哈希码右移 16 位，正好是 32bit 的一半；</li><li>将哈希码的高半区和低半区做异或，可以混合哈希码的高位和低位，以此加大低位的随机性；</li><li>将计算结果做高位归零，只保留低位值。</li></ol><p><img src=assets/HashMap%E7%9A%84%E5%93%88%E5%B8%8C%E8%BF%87%E7%A8%8B.png alt="HashMap 的哈希过程"></p><h3 id=散列冲突解决方法>散列冲突解决方法</h3><p>HashMap 底层采用链地址法来解决冲突。即使负载因子和散列函数设计得再合理，也免不了会出现拉链过长的情况，一旦出现拉链过长，则会严重影响 HashMap 的性能。</p><p>于是，在 JDK1.8 版本中，为了对 HashMap 做进一步优化引入了红黑树。</p><p>当链表长度太长（默认超过 8）时，链表就转换为红黑树，这是利用了红黑树快速增删改查的特点，提高 HashMap 的性能。</p><p>当红黑树结点个数少于 8 个的时候，又会将红黑树转化为链表，这是因为在数据量较小的情况下，红黑树要维护平衡，比起链表来，性能上的优势并不明显。</p></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
-<span class=item-content>翔仔</span></p><p class=copyright-item><span class=item-title>上次更新</span>
-<span class=item-content>2022-05-31 20:29:14</span></p><p class=copyright-item><span class=item-title>原始文档</span>
+<span class=item-content>翔仔</span></p><p class=copyright-item><span class=item-title>最近更新</span>
+<span class=item-content>2022-06-08 17:55:29</span></p><p class=copyright-item><span class=item-title>原始文档</span>
 <span class=item-content><a class=link-to-markdown href=https://fatedeity.cn/posts/data-structure-algorithm/hash-basic.md target=_blank>☞ 跳转阅读 ☜</a></span></p><p class=copyright-item><span class=item-title>许可协议</span>
 <span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><span class=item-title>相关分类</span>
 <a href=/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html>数据结构与算法</a></div><div class=post-tags><span class=item-title>相关标签</span>
