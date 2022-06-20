@@ -37,7 +37,7 @@
 ## 代码实现
 
 ```java
-package cn.fatedeity.sort;
+package cn.fatedeity.algorithm.sort;
 
 public class BubbleSort {
     private static void swap(int[] numbers, int src, int target) {
