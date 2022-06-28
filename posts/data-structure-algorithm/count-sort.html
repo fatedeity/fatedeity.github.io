@@ -1,0 +1,68 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>计数排序的简单理解 - 翔仔的个人博客</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="翔仔"><meta name=description content="学习计数排序可以了解到空间换时间的思想，其是一种牺牲空间换时间的排序算法，在其特定的场景上，甚至将时间复杂度降到了线性级别。
+"><meta name=keywords content="翔仔,博客,技术,后端,编程"><meta name=google-site-verification content="NSfr_TOb9-BVneo8k_7eO6vn7dy9XsG3KB7jBQD8hiA"><meta name=generator content="Hugo 0.101.0 with theme even"><link rel=canonical href=https://fatedeity.cn/posts/data-structure-algorithm/count-sort.html><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css><link href=/sass/main.min.3ebfc52a3110b42fe585c1d2c1ff95a7625f3dfa1e64fc0aa992d11c86a3d68d.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>翔仔的个人博客</a></div><div class=mobile-navbar-icon><span></span>
+<span></span>
+<span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>首页</li></a><a href=/categories.html><li class=mobile-menu-item>分类</li></a><a href=/tags.html><li class=mobile-menu-item>标签</li></a><a href=/posts.html><li class=mobile-menu-item>归档</li></a><a href=/about.html><li class=mobile-menu-item>关于</li></a><a href=/index.xml><li class=mobile-menu-item>RSS</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>翔仔的个人博客</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>首页</a></li><li class=menu-item><a class=menu-item-link href=/categories.html>分类</a></li><li class=menu-item><a class=menu-item-link href=/tags.html>标签</a></li><li class=menu-item><a class=menu-item-link href=/posts.html>归档</a></li><li class=menu-item><a class=menu-item-link href=/about.html>关于</a></li><li class=menu-item><a class=menu-item-link href=/index.xml>RSS</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>计数排序的简单理解</h1><div class=post-meta><span class=post-time>2022-06-28 21:49:04</span>
+<span class=more-meta>约 689 字</span>
+<span class=more-meta>预计阅读 2 分钟</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><a href=#详细描述>详细描述</a></li><li><a href=#算法图解>算法图解</a></li><li><a href=#问题解疑>问题解疑</a><ul><li><a href=#计数排序的时间复杂度是多少>计数排序的时间复杂度是多少？</a></li><li><a href=#计数排序有什么限制吗>计数排序有什么限制吗？</a></li></ul></li><li><a href=#代码实现>代码实现</a></li></ul></nav></div></div><div class=post-content><p>学习计数排序可以了解到空间换时间的思想，其是一种牺牲空间换时间的排序算法，在其特定的场景上，甚至将时间复杂度降到了线性级别。</p><h2 id=详细描述>详细描述</h2><p>计数排序作为一种线性时间复杂度的排序算法，其要求输入的数据必须是<strong>有确定范围的整数</strong>，核心在于将输入的数据值转化为键存储在额外开辟的数组空间中。</p><p>计数排序详细的执行步骤如下：</p><ol><li>找出原数组中元素值最大的，记为 <code>max</code>；</li><li>创建一个新数组 <code>count</code>，其长度是 <code>max+1</code>，其元素默认值都为 <code>0</code>；</li><li>遍历原数组中的元素，以原数组中的元素作为 <code>count</code> 数组的索引，以原数组中的元素出现次数作为 <code>count</code> 数组的元素值；</li><li>创建结果数组 <code>result</code>，起始索引 <code>index</code>；</li><li>遍历 <code>count</code> 数组，找出其中元素值大于 <code>0</code> 的元素，将其对应的索引作为元素值填充到 <code>result</code> 数组中去，每处理一次，<code>count</code> 中的该元素值减 <code>1</code>，直到该元素值不大于 <code>0</code>，依次处理 <code>count</code> 中剩下的元素；</li><li>返回结果数组 <code>result</code>。</li></ol><h2 id=算法图解>算法图解</h2><p><img src=assets/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F.gif alt=计数排序></p><h2 id=问题解疑>问题解疑</h2><h3 id=计数排序的时间复杂度是多少>计数排序的时间复杂度是多少？</h3><p>计数排序的时间复杂度可以达到 $O(n+k)$，其中 k 是 <code>count</code> 数组的长度。</p><p>从这里可以知道，<code>count</code> 数组元素的取值越集中，算法耗费的时间越短。</p><h3 id=计数排序有什么限制吗>计数排序有什么限制吗？</h3><p>计数排序有两个前提需要满足：</p><ul><li>排序的元素必须是整数，否则无法对应数组的索引下标</li><li>排序元素的取值要在一定范围内，并且比较集中，否则 <code>count</code> 数组将会非常大</li></ul><p>只有这两个条件都满足，才能最大程度发挥计数排序的优势。</p><h2 id=代码实现>代码实现</h2><pre><code class=language-java>package cn.fatedeity.algorithm.sort;
+
+/**
+ * 计数排序算法
+ */
+public class CountSort {
+    public static int[] sort(int[] numbers) {
+        if (numbers.length == 0) {
+            return numbers;
+        }
+
+        int min = numbers[0], max = numbers[0];
+        for (int number : numbers) {
+            if (number &lt; min) {
+                min = number;
+            } else if (number &gt; max) {
+                max = number;
+            }
+        }
+
+        int[] count = new int[max - min + 1];
+        for (int number : numbers) {
+            int index = number - min;
+            count[index]++;
+        }
+
+        int index = 0;
+        for (int i = 0; i &lt; count.length; i++) {
+            while (count[i] &gt; 0) {
+                numbers[index++] = i + min;
+                count[i]--;
+            }
+        }
+
+        return numbers;
+    }
+}
+</code></pre></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
+<span class=item-content>翔仔</span></p><p class=copyright-item><span class=item-title>最近更新</span>
+<span class=item-content>2022-06-28 21:50:57</span></p><p class=copyright-item><span class=item-title>原始文档</span>
+<span class=item-content><a class=link-to-markdown href=https://fatedeity.cn/posts/data-structure-algorithm/count-sort.md target=_blank>☞ 跳转阅读 ☜</a></span></p><p class=copyright-item><span class=item-title>许可协议</span>
+<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><span class=item-title>相关分类</span>
+<a href=/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html>数据结构与算法</a></div><div class=post-tags><span class=item-title>相关标签</span>
+<a href=/tags/%E7%AE%97%E6%B3%95.html>算法</a>
+<a href=/tags/%E6%8E%92%E5%BA%8F.html>排序</a></div><nav class=post-nav><a class=next href=/posts/data-structure-algorithm/merge-sort.html><span class="next-text nav-default">归并排序的简单理解</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="fa fa-angle-double-right" aria-hidden=true></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=copyright><span class=power-by>由 <a class=hugo-link href=https://gohugo.io>Hugo</a> 强力驱动</span>
+<span class=division>|</span>
+<span class=theme-info>主题 -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a></span>
+<span class=copyright-year><span>&copy;2022</span>
+<span class=heart><i class="fa fa-heart" aria-hidden=true></i></span>
+<span>翔仔</span><span class=division> |</span>
+<a class=icp href=http://beian.miit.gov.cn/ target=_blank>粤ICP备2021076569号</a></span></div></footer><div class=back-to-top id=back-to-top><i class="fa fa-angle-double-up" aria-hidden=true></i></div></div><script src="/lib/highlight/highlight.pack.js?v=20171001"></script><script src=/lib/clipboard/clipboard.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin=anonymous></script>
+<script>var languageCode="zh-cn".replace(/-/g,"_").replace(/_(.*)/,function(e,t){return e.replace(t,t.toUpperCase())});timeago().render(document.querySelectorAll(".timeago"),languageCode),timeago.cancel()</script><script src=https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js integrity=sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP crossorigin=anonymous></script>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css integrity=sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF crossorigin=anonymous><script type=text/javascript src=/js/main.min.d3c4bc8ea1fb0d24ac7ffd53d16dacf3a1d3af7c58bc7f665f1decc7179b32dd.js></script><script type=text/javascript>const copyButton=document.createElement("button"),codeTrNodeList=document.querySelectorAll("figure.highlight table tbody tr");for(let e=0;e<codeTrNodeList.length;e++){const t=codeTrNodeList[e];for(const n of t.getElementsByClassName("code"))n.className+=" "+`copy-code-${e}`;t.appendChild(copyButton),copyButton.outerHTML=`<button class="copy-btn btn" data-clipboard-action="copy" data-clipboard-target="td.copy-code-${e}">`+"复制</button>"}const clipboard=new ClipboardJS(".btn");clipboard.on("success",function(e){const t=document.querySelectorAll("figure.highlight button.copy-btn");for(const e of t)e.innerText="复制";e.trigger.innerText="已复制",setTimeout(()=>{e.trigger.innerText="复制"},3e3),e.clearSelection()})</script>
+<script type=text/javascript>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]}}</script><script async src=https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin=anonymous></script>
+<script id=baidu_push>(function(){if(window.location.hostname==="localhost")return;var t,n,e=document.createElement("script");e.async=!0,n=window.location.protocol.split(":")[0],n==="https"?e.src="https://zz.bdstatic.com/linksubmit/push.js":e.src="http://push.zhanzhang.baidu.com/push.js",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script></body></html>
