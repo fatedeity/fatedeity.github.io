@@ -17,7 +17,7 @@
 </code></pre><p>如果使用 <code>1</code> 作为数组的起始下标，将不能直接使用上面的寻址公式，而是需要修改如下：</p><pre><code class=language-c>address[i] = base_address + data_type_size * (i - 1)
 </code></pre><p>在对比前后两个寻址公式之后，使用 <code>1</code> 作为起始下标的寻址公式会比使用 <code>0</code> 作为起始下标的寻址公式多一个简单的减法指令。</p><p>对于非常底层的程序来说，即使只是多出一个简单的减法指令，也是一种性能的损耗，为了做到极致优化，选择 <code>0</code> 作为起始下标会更好。</p><p>当然还有一个历史原因，C 语言使用了 <code>0</code> 作为数组的起始下标，后续出现的编程语言都纷纷仿效，这也算是为了统一，降低程序员的学习成本。</p></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
 <span class=item-content>翔仔</span></p><p class=copyright-item><span class=item-title>最近更新</span>
-<span class=item-content>2022-06-30 08:44:21</span></p><p class=copyright-item><span class=item-title>原始文档</span>
+<span class=item-content>2022-06-30 09:23:31</span></p><p class=copyright-item><span class=item-title>原始文档</span>
 <span class=item-content><a class=link-to-markdown href=https://fatedeity.cn/posts/data-structure-algorithm/array-basic.md target=_blank>☞ 跳转阅读 ☜</a></span></p><p class=copyright-item><span class=item-title>许可协议</span>
 <span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><span class=item-title>相关分类</span>
 <a href=/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html>数据结构与算法</a></div><div class=post-tags><span class=item-title>相关标签</span>
