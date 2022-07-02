@@ -42,22 +42,36 @@
 package cn.fatedeity.algorithm.sort;
 
 /**
- * 插入排序算法
+ * 排序抽象类
  */
-public class InsertionSort {
-    private static void swap(int[] numbers, int src, int target) {
+public abstract class Sort {
+    protected void swap(int[] numbers, int src, int target) {
         int temp = numbers[src];
         numbers[src] = numbers[target];
         numbers[target] = temp;
     }
 
-    public static int[] sort(int[] numbers) {
+    public abstract int[] sort(int[] numbers);
+}
+```
+
+### 插入排序类
+
+```java
+package cn.fatedeity.algorithm.sort;
+
+/**
+ * 插入排序类
+ */
+public class InsertionSort extends Sort {
+    public int[] sort(int[] numbers) {
         for (int i = 1; i < numbers.length; i++) {
             for (int j = i; j > 0; j--) {
+                // 一直交换到顺序相反
                 if (numbers[j - 1] <= numbers[j]) {
                     break;
                 }
-                swap(numbers, j, j - 1);
+                this.swap(numbers, j, j - 1);
             }
         }
         return numbers;

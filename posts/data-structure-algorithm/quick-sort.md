@@ -39,22 +39,37 @@
 
 ## 代码实现
 
+### 排序抽象类
+
+```java
+package cn.fatedeity.algorithm.sort;
+
+/**
+ * 排序抽象类
+ */
+public abstract class Sort {
+    protected void swap(int[] numbers, int src, int target) {
+        int temp = numbers[src];
+        numbers[src] = numbers[target];
+        numbers[target] = temp;
+    }
+
+    public abstract int[] sort(int[] numbers);
+}
+```
+
+### 快速排序类
+
 ```java
 package cn.fatedeity.algorithm.sort;
 
 import java.util.Random;
 
 /**
- * 快速排序算法
+ * 快速排序类
  */
-public class QuickSort {
-    private static void swap(int[] numbers, int src, int target) {
-        int temp = numbers[src];
-        numbers[src] = numbers[target];
-        numbers[target] = temp;
-    }
-
-    private static int[] sort(int[] numbers, int low, int high) {
+public class QuickSort extends Sort {
+    private int[] sort(int[] numbers, int low, int high) {
         if (low > high) {
             return numbers;
         }
@@ -62,23 +77,24 @@ public class QuickSort {
         Random random = new Random();
         int pivotIndex = random.nextInt(low, high + 1);
         int pivot = numbers[pivotIndex];
-        swap(numbers, pivotIndex, low);
+        this.swap(numbers, pivotIndex, low);
 
         int mid = low + 1;
         for (int i = low + 1; i <= high; i++) {
             if (numbers[i] < pivot) {
-                swap(numbers, i, mid);
+                this.swap(numbers, i, mid);
                 mid++;
             }
         }
-        swap(numbers, low, --mid);
-        sort(numbers, low, mid - 1);
-        sort(numbers, mid + 1, high);
+        this.swap(numbers, low, --mid);
+        // 递归实现
+        this.sort(numbers, low, mid - 1);
+        this.sort(numbers, mid + 1, high);
         return numbers;
     }
 
-    public static int[] sort(int[] numbers) {
-        return sort(numbers, 0, numbers.length - 1);
+    public int[] sort(int[] numbers) {
+        return this.sort(numbers, 0, numbers.length - 1);
     }
 }
 ```

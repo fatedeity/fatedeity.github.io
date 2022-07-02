@@ -36,22 +36,40 @@
 
 ## 代码实现
 
+### 排序抽象类
+
 ```java
 package cn.fatedeity.algorithm.sort;
 
-public class BubbleSort {
-    private static void swap(int[] numbers, int src, int target) {
+/**
+ * 排序抽象类
+ */
+public abstract class Sort {
+    protected void swap(int[] numbers, int src, int target) {
         int temp = numbers[src];
         numbers[src] = numbers[target];
         numbers[target] = temp;
     }
 
-    public static int[] sort(int[] numbers) {
+    public abstract int[] sort(int[] numbers);
+}
+```
+
+### 冒泡排序类
+
+```java
+package cn.fatedeity.algorithm.sort;
+
+/**
+ * 冒泡排序类
+ */
+public class BubbleSort extends Sort {
+    public int[] sort(int[] numbers) {
         for (int i = 0; i < numbers.length - 1; i++) {
             boolean doSwap = false;
             for (int j = 0; j + 1 < numbers.length - i; j++) {
                 if (numbers[j] > numbers[j + 1]) {
-                    swap(numbers, j, j + 1);
+                    this.swap(numbers, j, j + 1);
                     doSwap = true;
                 }
             }

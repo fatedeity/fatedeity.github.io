@@ -39,14 +39,35 @@
 
 ## 代码实现
 
+### 排序抽象类
+
 ```java
 package cn.fatedeity.algorithm.sort;
 
 /**
- * 计数排序算法
+ * 排序抽象类
  */
-public class CountSort {
-    public static int[] sort(int[] numbers) {
+public abstract class Sort {
+    protected void swap(int[] numbers, int src, int target) {
+        int temp = numbers[src];
+        numbers[src] = numbers[target];
+        numbers[target] = temp;
+    }
+
+    public abstract int[] sort(int[] numbers);
+}
+```
+
+### 计数排序类
+
+```java
+package cn.fatedeity.algorithm.sort;
+
+/**
+ * 计数排序类
+ */
+public class CountSort extends Sort {
+    public int[] sort(int[] numbers) {
         if (numbers.length == 0) {
             return numbers;
         }

@@ -2,34 +2,48 @@
 "><meta name=keywords content="翔仔,博客,技术,后端,编程"><meta name=google-site-verification content="NSfr_TOb9-BVneo8k_7eO6vn7dy9XsG3KB7jBQD8hiA"><meta name=generator content="Hugo 0.101.0 with theme even"><link rel=canonical href=https://fatedeity.cn/posts/data-structure-algorithm/bucket-sort.html><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css><link href=/sass/main.min.3ebfc52a3110b42fe585c1d2c1ff95a7625f3dfa1e64fc0aa992d11c86a3d68d.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>翔仔的个人博客</a></div><div class=mobile-navbar-icon><span></span>
 <span></span>
 <span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>首页</li></a><a href=/categories.html><li class=mobile-menu-item>分类</li></a><a href=/tags.html><li class=mobile-menu-item>标签</li></a><a href=/posts.html><li class=mobile-menu-item>归档</li></a><a href=/about.html><li class=mobile-menu-item>关于</li></a><a href=/index.xml><li class=mobile-menu-item>RSS</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>翔仔的个人博客</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>首页</a></li><li class=menu-item><a class=menu-item-link href=/categories.html>分类</a></li><li class=menu-item><a class=menu-item-link href=/tags.html>标签</a></li><li class=menu-item><a class=menu-item-link href=/posts.html>归档</a></li><li class=menu-item><a class=menu-item-link href=/about.html>关于</a></li><li class=menu-item><a class=menu-item-link href=/index.xml>RSS</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>桶排序的简单理解</h1><div class=post-meta><span class=post-time>2022-06-30 08:42:29</span>
-<span class=more-meta>约 805 字</span>
-<span class=more-meta>预计阅读 2 分钟</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><a href=#详细描述>详细描述</a></li><li><a href=#算法图解>算法图解</a></li><li><a href=#问题解疑>问题解疑</a><ul><li><a href=#桶排序的关键是什么>桶排序的关键是什么？</a></li><li><a href=#桶排序的适用于什么场景>桶排序的适用于什么场景？</a></li></ul></li><li><a href=#代码实现>代码实现</a></li></ul></nav></div></div><div class=post-content><p>桶排序是计数排序的一种扩展使用，适用于元素值范围不大的序列。如果对大量学生的考试成绩做排序，就非常适合使用桶排序。</p><h2 id=详细描述>详细描述</h2><p>桶排序的工作原理是，将序列中的元素分配到有限的桶里，每个桶再分别进行排序（使用别的排序算法或者递归使用桶排序），最终合并成结果序列。</p><p>桶排序详细的执行步骤如下：</p><ol><li>找出序列中最小的元素和最大的元素，并计算得到差值范围和映射范围，确定桶的数量；</li><li>遍历整个序列，将每一个元素移动到对应的桶中；</li><li>对每一个桶中的元素进行排序，直到所有的桶中元素都有序；</li><li>合并每一个桶中的元素成为有序序列。</li></ol><h2 id=算法图解>算法图解</h2><p><img src=assets/%E6%A1%B6%E6%8E%92%E5%BA%8F.gif alt=桶排序>​</p><h2 id=问题解疑>问题解疑</h2><h3 id=桶排序的关键是什么>桶排序的关键是什么？</h3><p>桶排序过程中存在两个关键环节：元素到桶的映射规则、排序算法选择。</p><p>对于映射规则，如果规则设计过于模糊、宽泛，可能所有元素都映射到同一个桶，导致桶排序往比较类排序算法演变；如果规则设计过于严苛，可能每一个桶只分配到一个元素，导致桶排序往计数排序方式演变。</p><p>对于桶中元素的排序，可以继续使用桶排序或者其他排序算法，最终桶排序的复杂度和稳定性，都根据排序算法的选择有所不同。</p><h3 id=桶排序的适用于什么场景>桶排序的适用于什么场景？</h3><p>最好时间复杂度的场景是：序列中的元素值范围越小越好，比如对范围只有 10 的序列做排序，申请 10 个桶就能实现遍历一次序列完成排序。</p><p>最好空间复杂度的场景是：序列中的元素值均匀分布，最终分配到每一个桶的元素数量都相差不大，这样可以避免数据倾斜的问题。</p><h2 id=代码实现>代码实现</h2><pre><code class=language-java>package cn.fatedeity.algorithm.sort;
+<span class=more-meta>约 853 字</span>
+<span class=more-meta>预计阅读 2 分钟</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><a href=#详细描述>详细描述</a></li><li><a href=#算法图解>算法图解</a></li><li><a href=#问题解疑>问题解疑</a><ul><li><a href=#桶排序的关键是什么>桶排序的关键是什么？</a></li><li><a href=#桶排序的适用于什么场景>桶排序的适用于什么场景？</a></li></ul></li><li><a href=#代码实现>代码实现</a><ul><li><a href=#排序抽象类>排序抽象类</a></li><li><a href=#桶排序类>桶排序类</a></li></ul></li></ul></nav></div></div><div class=post-content><p>桶排序是计数排序的一种扩展使用，适用于元素值范围不大的序列。如果对大量学生的考试成绩做排序，就非常适合使用桶排序。</p><h2 id=详细描述>详细描述</h2><p>桶排序的工作原理是，将序列中的元素分配到有限的桶里，每个桶再分别进行排序（使用别的排序算法或者递归使用桶排序），最终合并成结果序列。</p><p>桶排序详细的执行步骤如下：</p><ol><li>找出序列中最小的元素和最大的元素，并计算得到差值范围和映射范围，确定桶的数量；</li><li>遍历整个序列，将每一个元素移动到对应的桶中；</li><li>对每一个桶中的元素进行排序，直到所有的桶中元素都有序；</li><li>合并每一个桶中的元素成为有序序列。</li></ol><h2 id=算法图解>算法图解</h2><p><img src=assets/%E6%A1%B6%E6%8E%92%E5%BA%8F.gif alt=桶排序>​</p><h2 id=问题解疑>问题解疑</h2><h3 id=桶排序的关键是什么>桶排序的关键是什么？</h3><p>桶排序过程中存在两个关键环节：元素到桶的映射规则、排序算法选择。</p><p>对于映射规则，如果规则设计过于模糊、宽泛，可能所有元素都映射到同一个桶，导致桶排序往比较类排序算法演变；如果规则设计过于严苛，可能每一个桶只分配到一个元素，导致桶排序往计数排序方式演变。</p><p>对于桶中元素的排序，可以继续使用桶排序或者其他排序算法，最终桶排序的复杂度和稳定性，都根据排序算法的选择有所不同。</p><h3 id=桶排序的适用于什么场景>桶排序的适用于什么场景？</h3><p>最好时间复杂度的场景是：序列中的元素值范围越小越好，比如对范围只有 10 的序列做排序，申请 10 个桶就能实现遍历一次序列完成排序。</p><p>最好空间复杂度的场景是：序列中的元素值均匀分布，最终分配到每一个桶的元素数量都相差不大，这样可以避免数据倾斜的问题。</p><h2 id=代码实现>代码实现</h2><h3 id=排序抽象类>排序抽象类</h3><pre><code class=language-java>package cn.fatedeity.algorithm.sort;
+
+/**
+ * 排序抽象类
+ */
+public abstract class Sort {
+    protected void swap(int[] numbers, int src, int target) {
+        int temp = numbers[src];
+        numbers[src] = numbers[target];
+        numbers[target] = temp;
+    }
+
+    public abstract int[] sort(int[] numbers);
+}
+</code></pre><h3 id=桶排序类>桶排序类</h3><pre><code class=language-java>package cn.fatedeity.algorithm.sort;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 桶排序算法
+ * 桶排序类
  */
-public class BucketSort {
-    private static void swap(List&lt;Integer&gt; numbers, int src, int target) {
+public class BucketSort extends Sort {
+    private void swap(List&lt;Integer&gt; numbers, int src, int target) {
         int temp = numbers.get(src);
         numbers.set(src, numbers.get(target));
         numbers.set(target, temp);
     }
 
-    private static void insertSort(List&lt;Integer&gt; numbers) {
+    private void insertSort(List&lt;Integer&gt; numbers) {
         for (int i = 1; i &lt; numbers.size(); i++) {
             for (int j = i; j &gt; 0; j--) {
                 if (numbers.get(j - 1) &lt;= numbers.get(j)) {
                     break;
                 }
-                swap(numbers, j, j - 1);
+                this.swap(numbers, j, j - 1);
             }
         }
     }
 
-    public static int[] sort(int[] numbers) {
+    public int[] sort(int[] numbers) {
         if (numbers.length == 0) {
             return numbers;
         }
@@ -60,7 +74,7 @@ public class BucketSort {
         int index = 0;
         for (int i = 0; i &lt; bucketNum; i++) {
             List&lt;Integer&gt; bucket = bucketList.get(i);
-            insertSort(bucket);
+            this.insertSort(bucket);
             for (int number : bucket) {
                 numbers[index++] = number;
             }
@@ -70,7 +84,7 @@ public class BucketSort {
 }
 </code></pre></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
 <span class=item-content>翔仔</span></p><p class=copyright-item><span class=item-title>最近更新</span>
-<span class=item-content>2022-06-30 09:23:31</span></p><p class=copyright-item><span class=item-title>原始文档</span>
+<span class=item-content>2022-07-02 14:56:12</span></p><p class=copyright-item><span class=item-title>原始文档</span>
 <span class=item-content><a class=link-to-markdown href=https://fatedeity.cn/posts/data-structure-algorithm/bucket-sort.md target=_blank>☞ 跳转阅读 ☜</a></span></p><p class=copyright-item><span class=item-title>许可协议</span>
 <span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><span class=item-title>相关分类</span>
 <a href=/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html>数据结构与算法</a></div><div class=post-tags><span class=item-title>相关标签</span>

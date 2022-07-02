@@ -36,6 +36,27 @@
 
 ## 代码实现
 
+### 排序抽象类
+
+```java
+package cn.fatedeity.algorithm.sort;
+
+/**
+ * 排序抽象类
+ */
+public abstract class Sort {
+    protected void swap(int[] numbers, int src, int target) {
+        int temp = numbers[src];
+        numbers[src] = numbers[target];
+        numbers[target] = temp;
+    }
+
+    public abstract int[] sort(int[] numbers);
+}
+```
+
+### 桶排序类
+
 ```java
 package cn.fatedeity.algorithm.sort;
 
@@ -43,27 +64,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 桶排序算法
+ * 桶排序类
  */
-public class BucketSort {
-    private static void swap(List<Integer> numbers, int src, int target) {
+public class BucketSort extends Sort {
+    private void swap(List<Integer> numbers, int src, int target) {
         int temp = numbers.get(src);
         numbers.set(src, numbers.get(target));
         numbers.set(target, temp);
     }
 
-    private static void insertSort(List<Integer> numbers) {
+    private void insertSort(List<Integer> numbers) {
         for (int i = 1; i < numbers.size(); i++) {
             for (int j = i; j > 0; j--) {
                 if (numbers.get(j - 1) <= numbers.get(j)) {
                     break;
                 }
-                swap(numbers, j, j - 1);
+                this.swap(numbers, j, j - 1);
             }
         }
     }
 
-    public static int[] sort(int[] numbers) {
+    public int[] sort(int[] numbers) {
         if (numbers.length == 0) {
             return numbers;
         }
@@ -94,7 +115,7 @@ public class BucketSort {
         int index = 0;
         for (int i = 0; i < bucketNum; i++) {
             List<Integer> bucket = bucketList.get(i);
-            insertSort(bucket);
+            this.insertSort(bucket);
             for (int number : bucket) {
                 numbers[index++] = number;
             }
