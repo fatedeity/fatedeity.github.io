@@ -38,20 +38,33 @@
 
 ## 代码实现
 
+### 排序接口
+
+```java
+package cn.fatedeity.algorithm.sort;
+
+/**
+ * 排序接口
+ */
+public interface Sort {
+    int[] sort(int[] numbers);
+}
+```
+
+### 排序抽象类
+
 ```java
 package cn.fatedeity.algorithm.sort;
 
 /**
  * 排序抽象类
  */
-public abstract class Sort {
+public abstract class AbstractSort implements Sort {
     protected void swap(int[] numbers, int src, int target) {
         int temp = numbers[src];
         numbers[src] = numbers[target];
         numbers[target] = temp;
     }
-
-    public abstract int[] sort(int[] numbers);
 }
 ```
 
@@ -63,8 +76,13 @@ package cn.fatedeity.algorithm.sort;
 /**
  * 插入排序类
  */
-public class InsertionSort extends Sort {
+public class InsertionSort extends AbstractSort {
+    @Override
     public int[] sort(int[] numbers) {
+        if (numbers.length <= 1) {
+            return numbers;
+        }
+
         for (int i = 1; i < numbers.length; i++) {
             for (int j = i; j > 0; j--) {
                 // 一直交换到顺序相反

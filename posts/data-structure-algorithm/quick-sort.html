@@ -2,20 +2,26 @@
 "><meta name=keywords content="翔仔,博客,技术,后端,编程"><meta name=google-site-verification content="NSfr_TOb9-BVneo8k_7eO6vn7dy9XsG3KB7jBQD8hiA"><meta name=generator content="Hugo 0.101.0 with theme even"><link rel=canonical href=https://fatedeity.cn/posts/data-structure-algorithm/quick-sort.html><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css><link href=/sass/main.min.3ebfc52a3110b42fe585c1d2c1ff95a7625f3dfa1e64fc0aa992d11c86a3d68d.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>翔仔的个人博客</a></div><div class=mobile-navbar-icon><span></span>
 <span></span>
 <span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>首页</li></a><a href=/categories.html><li class=mobile-menu-item>分类</li></a><a href=/tags.html><li class=mobile-menu-item>标签</li></a><a href=/posts.html><li class=mobile-menu-item>归档</li></a><a href=/about.html><li class=mobile-menu-item>关于</li></a><a href=/index.xml><li class=mobile-menu-item>RSS</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>翔仔的个人博客</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>首页</a></li><li class=menu-item><a class=menu-item-link href=/categories.html>分类</a></li><li class=menu-item><a class=menu-item-link href=/tags.html>标签</a></li><li class=menu-item><a class=menu-item-link href=/posts.html>归档</a></li><li class=menu-item><a class=menu-item-link href=/about.html>关于</a></li><li class=menu-item><a class=menu-item-link href=/index.xml>RSS</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>快速排序的简单理解</h1><div class=post-meta><span class=post-time>2022-06-23 08:49:12</span>
-<span class=more-meta>约 947 字</span>
-<span class=more-meta>预计阅读 2 分钟</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><a href=#详细描述>详细描述</a></li><li><a href=#算法图解>算法图解</a></li><li><a href=#问题解疑>问题解疑</a><ul><li><a href=#快速排序可以怎样选择基准值>快速排序可以怎样选择基准值？</a></li><li><a href=#快速排序有什么好的优化方法>快速排序有什么好的优化方法？</a></li></ul></li><li><a href=#代码实现>代码实现</a><ul><li><a href=#排序抽象类>排序抽象类</a></li><li><a href=#快速排序类>快速排序类</a></li></ul></li></ul></nav></div></div><div class=post-content><p>快速排序是面试当中最常见的排序算法问题了，除了需要理解快速排序的流程，还要理解一些快速排序的代码实现，了解一些优化方法。</p><h2 id=详细描述>详细描述</h2><p>快速排序通过一趟排序将待排序列分割成独立的两部分，其中一部分序列的关键字均比另一部分序列的关键字小，则可分别对这两部分序列继续进行排序，以达到整个序列有序的目的。</p><p>快速排序详细的执行步骤如下：</p><ol><li>从序列中挑出一个元素，称为 “基准”（pivot）；</li><li>重新排序序列，所有比基准值小的元素摆放在基准前面，所有比基准值大的元素摆在基准的后面（相同的数可以到任一边）。在这个分区退出之后，该基准就处于序列的中间位置。这个称为分区（partition）操作；</li><li>递归地（recursive）把小于基准值元素的子序列和大于基准值元素的子序列排序。</li></ol><h2 id=算法图解>算法图解</h2><p><img src=assets/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F.gif alt=快速排序></p><h2 id=问题解疑>问题解疑</h2><h3 id=快速排序可以怎样选择基准值>快速排序可以怎样选择基准值？</h3><p>第一种方式：固定位置选择基准值；在整个序列已经趋于有序的情况下，效率很低。</p><p>第二种方式：随机选取待排序列中任意一个数作为基准值；当该序列趋于有序时，能够让效率提高，但在整个序列数全部相等的时候，随机快排的效率依然很低。</p><p>第三种方式：从区间的首、尾、中间，分别取出一个数，然后对比大小，取这 3 个数的中间值作为基准值；这种方式解决了很多特殊的问题，但对于有很多重复值的序列，效果依然不好。</p><h3 id=快速排序有什么好的优化方法>快速排序有什么好的优化方法？</h3><p>首先，合理选择基准值，将固定位置选择基准值改成三点取中法，可以解决很多特殊的情况，实现更快地分区。</p><p>其次，当待排序序列的长度分割到一定大小后，使用插入排序。对于待排序的序列长度很小或基本趋于有序时，插入排序的效率更好。</p><p>在排序后，可以将与基准值相等的数放在一起，在下次分割时可以不考虑这些数。对于解决重复数据较多的情况非常有用。</p><p>在实现上，递归实现的快速排序在函数尾部有两次递归操作，可以对其使用尾递归优化（简单地说，就是尾位置调用自身）。</p><h2 id=代码实现>代码实现</h2><h3 id=排序抽象类>排序抽象类</h3><pre><code class=language-java>package cn.fatedeity.algorithm.sort;
+<span class=more-meta>约 974 字</span>
+<span class=more-meta>预计阅读 2 分钟</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><a href=#详细描述>详细描述</a></li><li><a href=#算法图解>算法图解</a></li><li><a href=#问题解疑>问题解疑</a><ul><li><a href=#快速排序可以怎样选择基准值>快速排序可以怎样选择基准值？</a></li><li><a href=#快速排序有什么好的优化方法>快速排序有什么好的优化方法？</a></li></ul></li><li><a href=#代码实现>代码实现</a><ul><li><a href=#排序接口>排序接口</a></li><li><a href=#排序抽象类>排序抽象类</a></li><li><a href=#快速排序类>快速排序类</a></li></ul></li></ul></nav></div></div><div class=post-content><p>快速排序是面试当中最常见的排序算法问题了，除了需要理解快速排序的流程，还要理解一些快速排序的代码实现，了解一些优化方法。</p><h2 id=详细描述>详细描述</h2><p>快速排序通过一趟排序将待排序列分割成独立的两部分，其中一部分序列的关键字均比另一部分序列的关键字小，则可分别对这两部分序列继续进行排序，以达到整个序列有序的目的。</p><p>快速排序详细的执行步骤如下：</p><ol><li>从序列中挑出一个元素，称为 “基准”（pivot）；</li><li>重新排序序列，所有比基准值小的元素摆放在基准前面，所有比基准值大的元素摆在基准的后面（相同的数可以到任一边）。在这个分区退出之后，该基准就处于序列的中间位置。这个称为分区（partition）操作；</li><li>递归地（recursive）把小于基准值元素的子序列和大于基准值元素的子序列排序。</li></ol><h2 id=算法图解>算法图解</h2><p><img src=assets/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F.gif alt=快速排序></p><h2 id=问题解疑>问题解疑</h2><h3 id=快速排序可以怎样选择基准值>快速排序可以怎样选择基准值？</h3><p>第一种方式：固定位置选择基准值；在整个序列已经趋于有序的情况下，效率很低。</p><p>第二种方式：随机选取待排序列中任意一个数作为基准值；当该序列趋于有序时，能够让效率提高，但在整个序列数全部相等的时候，随机快排的效率依然很低。</p><p>第三种方式：从区间的首、尾、中间，分别取出一个数，然后对比大小，取这 3 个数的中间值作为基准值；这种方式解决了很多特殊的问题，但对于有很多重复值的序列，效果依然不好。</p><h3 id=快速排序有什么好的优化方法>快速排序有什么好的优化方法？</h3><p>首先，合理选择基准值，将固定位置选择基准值改成三点取中法，可以解决很多特殊的情况，实现更快地分区。</p><p>其次，当待排序序列的长度分割到一定大小后，使用插入排序。对于待排序的序列长度很小或基本趋于有序时，插入排序的效率更好。</p><p>在排序后，可以将与基准值相等的数放在一起，在下次分割时可以不考虑这些数。对于解决重复数据较多的情况非常有用。</p><p>在实现上，递归实现的快速排序在函数尾部有两次递归操作，可以对其使用尾递归优化（简单地说，就是尾位置调用自身）。</p><h2 id=代码实现>代码实现</h2><h3 id=排序接口>排序接口</h3><pre><code class=language-java>package cn.fatedeity.algorithm.sort;
+
+/**
+ * 排序接口
+ */
+public interface Sort {
+    int[] sort(int[] numbers);
+}
+</code></pre><h3 id=排序抽象类>排序抽象类</h3><pre><code class=language-java>package cn.fatedeity.algorithm.sort;
 
 /**
  * 排序抽象类
  */
-public abstract class Sort {
+public abstract class AbstractSort implements Sort {
     protected void swap(int[] numbers, int src, int target) {
         int temp = numbers[src];
         numbers[src] = numbers[target];
         numbers[target] = temp;
     }
-
-    public abstract int[] sort(int[] numbers);
 }
 </code></pre><h3 id=快速排序类>快速排序类</h3><pre><code class=language-java>package cn.fatedeity.algorithm.sort;
 
@@ -24,7 +30,7 @@ import java.util.Random;
 /**
  * 快速排序类
  */
-public class QuickSort extends Sort {
+public class QuickSort extends AbstractSort {
     private int[] sort(int[] numbers, int low, int high) {
         if (low &gt; high) {
             return numbers;
@@ -49,13 +55,18 @@ public class QuickSort extends Sort {
         return numbers;
     }
 
+    @Override
     public int[] sort(int[] numbers) {
+        if (numbers.length &lt;= 1) {
+            return numbers;
+        }
+
         return this.sort(numbers, 0, numbers.length - 1);
     }
 }
 </code></pre></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
 <span class=item-content>翔仔</span></p><p class=copyright-item><span class=item-title>最近更新</span>
-<span class=item-content>2022-07-02 15:03:00</span></p><p class=copyright-item><span class=item-title>原始文档</span>
+<span class=item-content>2022-07-03 20:05:40</span></p><p class=copyright-item><span class=item-title>原始文档</span>
 <span class=item-content><a class=link-to-markdown href=https://fatedeity.cn/posts/data-structure-algorithm/quick-sort.md target=_blank>☞ 跳转阅读 ☜</a></span></p><p class=copyright-item><span class=item-title>许可协议</span>
 <span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><span class=item-title>相关分类</span>
 <a href=/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html>数据结构与算法</a></div><div class=post-tags><span class=item-title>相关标签</span>

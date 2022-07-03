@@ -2,27 +2,33 @@
 "><meta name=keywords content="翔仔,博客,技术,后端,编程"><meta name=google-site-verification content="NSfr_TOb9-BVneo8k_7eO6vn7dy9XsG3KB7jBQD8hiA"><meta name=generator content="Hugo 0.101.0 with theme even"><link rel=canonical href=https://fatedeity.cn/posts/data-structure-algorithm/merge-sort.html><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css><link href=/sass/main.min.3ebfc52a3110b42fe585c1d2c1ff95a7625f3dfa1e64fc0aa992d11c86a3d68d.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>翔仔的个人博客</a></div><div class=mobile-navbar-icon><span></span>
 <span></span>
 <span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>首页</li></a><a href=/categories.html><li class=mobile-menu-item>分类</li></a><a href=/tags.html><li class=mobile-menu-item>标签</li></a><a href=/posts.html><li class=mobile-menu-item>归档</li></a><a href=/about.html><li class=mobile-menu-item>关于</li></a><a href=/index.xml><li class=mobile-menu-item>RSS</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>翔仔的个人博客</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>首页</a></li><li class=menu-item><a class=menu-item-link href=/categories.html>分类</a></li><li class=menu-item><a class=menu-item-link href=/tags.html>标签</a></li><li class=menu-item><a class=menu-item-link href=/posts.html>归档</a></li><li class=menu-item><a class=menu-item-link href=/about.html>关于</a></li><li class=menu-item><a class=menu-item-link href=/index.xml>RSS</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>归并排序的简单理解</h1><div class=post-meta><span class=post-time>2022-06-24 08:58:56</span>
-<span class=more-meta>约 748 字</span>
-<span class=more-meta>预计阅读 2 分钟</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><a href=#详细描述>详细描述</a></li><li><a href=#算法图解>算法图解</a></li><li><a href=#问题解疑>问题解疑</a><ul><li><a href=#归并排序和快速排序比较怎么样>归并排序和快速排序比较怎么样？</a></li><li><a href=#归并排序的应用在什么场景>归并排序的应用在什么场景？</a></li><li><a href=#归并排序的时间复杂度是多少>归并排序的时间复杂度是多少？</a></li></ul></li><li><a href=#代码实现>代码实现</a><ul><li><a href=#排序抽象类>排序抽象类</a></li><li><a href=#归并排序类>归并排序类</a></li></ul></li></ul></nav></div></div><div class=post-content><p>归并排序与与快速排序一样，是采用分治法（Divide and Conquer）的一个非常典型的应用，在排序算法中，同时了解归并排序和快速排序，相互印证，能理解得更深。</p><h2 id=详细描述>详细描述</h2><p>归并排序的基本思想是，将已有序的子序列合并，可以得到有序的完整序列；即先使每个子序列有序，再使子序列段间有序。若将两个有序表合并成一个有序表，称为<strong>二路归并</strong>。</p><p>归并排序详细的执行步骤如下：</p><ol><li>申请空间，使其大小为两个已经排序序列之和，该空间用来存放合并后的序列；</li><li>设定两个指针，最初位置分别为两个已经排序序列的起始位置；</li><li>比较两个指针所指向的元素，选择相对小的元素放入到合并空间，并移动指针到下一位置；</li><li>重复步骤 3 直到某一指针超出序列尾。</li></ol><h2 id=算法图解>算法图解</h2><p><img src=assets/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F.gif alt=归并排序></p><h2 id=问题解疑>问题解疑</h2><h3 id=归并排序和快速排序比较怎么样>归并排序和快速排序比较怎么样？</h3><p>归并排序的比较次数小于快速排序的比较次数，移动次数一般多于快速排序的移动次数。</p><h3 id=归并排序的应用在什么场景>归并排序的应用在什么场景？</h3><p>归并排序速度仅次于快速排序，为稳定排序算法，一般用于对总体无序，但是各子项相对有序的序列。</p><h3 id=归并排序的时间复杂度是多少>归并排序的时间复杂度是多少？</h3><p>每次合并操作的平均时间复杂度为 $O(n)$，而完全二叉树的深度为 $\log_2n$，总的平均时间复杂度为 $O(n \log n)$。</p><p>并且，归并排序的最好、最坏、平均时间复杂度均为 $O(n \log n)$。</p><h2 id=代码实现>代码实现</h2><h3 id=排序抽象类>排序抽象类</h3><pre><code class=language-java>package cn.fatedeity.algorithm.sort;
+<span class=more-meta>约 775 字</span>
+<span class=more-meta>预计阅读 2 分钟</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><a href=#详细描述>详细描述</a></li><li><a href=#算法图解>算法图解</a></li><li><a href=#问题解疑>问题解疑</a><ul><li><a href=#归并排序和快速排序比较怎么样>归并排序和快速排序比较怎么样？</a></li><li><a href=#归并排序的应用在什么场景>归并排序的应用在什么场景？</a></li><li><a href=#归并排序的时间复杂度是多少>归并排序的时间复杂度是多少？</a></li></ul></li><li><a href=#代码实现>代码实现</a><ul><li><a href=#排序接口>排序接口</a></li><li><a href=#排序抽象类>排序抽象类</a></li><li><a href=#归并排序类>归并排序类</a></li></ul></li></ul></nav></div></div><div class=post-content><p>归并排序与与快速排序一样，是采用分治法（Divide and Conquer）的一个非常典型的应用，在排序算法中，同时了解归并排序和快速排序，相互印证，能理解得更深。</p><h2 id=详细描述>详细描述</h2><p>归并排序的基本思想是，将已有序的子序列合并，可以得到有序的完整序列；即先使每个子序列有序，再使子序列段间有序。若将两个有序表合并成一个有序表，称为<strong>二路归并</strong>。</p><p>归并排序详细的执行步骤如下：</p><ol><li>申请空间，使其大小为两个已经排序序列之和，该空间用来存放合并后的序列；</li><li>设定两个指针，最初位置分别为两个已经排序序列的起始位置；</li><li>比较两个指针所指向的元素，选择相对小的元素放入到合并空间，并移动指针到下一位置；</li><li>重复步骤 3 直到某一指针超出序列尾。</li></ol><h2 id=算法图解>算法图解</h2><p><img src=assets/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F.gif alt=归并排序></p><h2 id=问题解疑>问题解疑</h2><h3 id=归并排序和快速排序比较怎么样>归并排序和快速排序比较怎么样？</h3><p>归并排序的比较次数小于快速排序的比较次数，移动次数一般多于快速排序的移动次数。</p><h3 id=归并排序的应用在什么场景>归并排序的应用在什么场景？</h3><p>归并排序速度仅次于快速排序，为稳定排序算法，一般用于对总体无序，但是各子项相对有序的序列。</p><h3 id=归并排序的时间复杂度是多少>归并排序的时间复杂度是多少？</h3><p>每次合并操作的平均时间复杂度为 $O(n)$，而完全二叉树的深度为 $\log_2n$，总的平均时间复杂度为 $O(n \log n)$。</p><p>并且，归并排序的最好、最坏、平均时间复杂度均为 $O(n \log n)$。</p><h2 id=代码实现>代码实现</h2><h3 id=排序接口>排序接口</h3><pre><code class=language-java>package cn.fatedeity.algorithm.sort;
+
+/**
+ * 排序接口
+ */
+public interface Sort {
+    int[] sort(int[] numbers);
+}
+</code></pre><h3 id=排序抽象类>排序抽象类</h3><pre><code class=language-java>package cn.fatedeity.algorithm.sort;
 
 /**
  * 排序抽象类
  */
-public abstract class Sort {
+public abstract class AbstractSort implements Sort {
     protected void swap(int[] numbers, int src, int target) {
         int temp = numbers[src];
         numbers[src] = numbers[target];
         numbers[target] = temp;
     }
-
-    public abstract int[] sort(int[] numbers);
 }
 </code></pre><h3 id=归并排序类>归并排序类</h3><pre><code class=language-java>package cn.fatedeity.algorithm.sort;
 
 /**
  * 归并排序类
  */
-public class MergeSort extends Sort {
+public class MergeSort extends AbstractSort {
     private void merge(int[] numbers, int low, int mid, int high) {
         int i = low;
         int j = mid + 1;
@@ -61,13 +67,18 @@ public class MergeSort extends Sort {
         return numbers;
     }
 
+    @Override
     public int[] sort(int[] numbers) {
+        if (numbers.length &lt;= 1) {
+            return numbers;
+        }
+
         return this.sort(numbers, 0, numbers.length - 1);
     }
 }
 </code></pre></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
 <span class=item-content>翔仔</span></p><p class=copyright-item><span class=item-title>最近更新</span>
-<span class=item-content>2022-07-02 15:03:00</span></p><p class=copyright-item><span class=item-title>原始文档</span>
+<span class=item-content>2022-07-03 20:05:40</span></p><p class=copyright-item><span class=item-title>原始文档</span>
 <span class=item-content><a class=link-to-markdown href=https://fatedeity.cn/posts/data-structure-algorithm/merge-sort.md target=_blank>☞ 跳转阅读 ☜</a></span></p><p class=copyright-item><span class=item-title>许可协议</span>
 <span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><span class=item-title>相关分类</span>
 <a href=/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html>数据结构与算法</a></div><div class=post-tags><span class=item-title>相关标签</span>
