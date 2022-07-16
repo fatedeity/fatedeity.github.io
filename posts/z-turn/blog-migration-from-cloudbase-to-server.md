@@ -282,5 +282,5 @@ goaccess -p /home/fatedeity/.goaccessrc
 
 这样就大功告成了，展示一下 GoAccess 的空页面：
 
-![GoAccess空数据页面](assets/GoAccess空数据页面.png)
+![GoAccess 空数据页面](assets/GoAccess空数据页面.png)
 
