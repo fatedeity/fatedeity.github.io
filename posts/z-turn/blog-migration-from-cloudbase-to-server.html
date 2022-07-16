@@ -1,0 +1,194 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>博客从 CloudBase 迁移至云主机 - 翔仔的个人博客</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="翔仔"><meta name=description content="本来博客部署在 CloudBase 也挺好，没有什么访问量的博客一个月也花不了几毛钱，在这个上面基本是无感了。奈何腾讯准备更改 CloudBase 的计费模式，为了省那一点钱，还是将博客迁移到自己的服务器上吧。
+"><meta name=keywords content="翔仔,博客,技术,后端,编程"><meta name=google-site-verification content="NSfr_TOb9-BVneo8k_7eO6vn7dy9XsG3KB7jBQD8hiA"><meta name=generator content="Hugo 0.101.0 with theme even"><link rel=canonical href=https://fatedeity.cn/posts/z-turn/blog-migration-from-cloudbase-to-server.html><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fontsource/ubuntu@4.5.10/index.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fontsource/ubuntu-mono@4.5.10/index.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.6.0/style.min.css><link href=/sass/main.min.466d95d92b3e86c21b7745db96b56f5c5c393becb940470cccf6e7a939113b96.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>翔仔的个人博客</a></div><div class=mobile-navbar-icon><span></span>
+<span></span>
+<span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>首页</li></a><a href=/categories.html><li class=mobile-menu-item>分类</li></a><a href=/tags.html><li class=mobile-menu-item>标签</li></a><a href=/posts.html><li class=mobile-menu-item>归档</li></a><a href=/about.html><li class=mobile-menu-item>关于</li></a><a href=/index.xml><li class=mobile-menu-item>订阅</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>翔仔的个人博客</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>首页</a></li><li class=menu-item><a class=menu-item-link href=/categories.html>分类</a></li><li class=menu-item><a class=menu-item-link href=/tags.html>标签</a></li><li class=menu-item><a class=menu-item-link href=/posts.html>归档</a></li><li class=menu-item><a class=menu-item-link href=/about.html>关于</a></li><li class=menu-item><a class=menu-item-link href=/index.xml>订阅</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>博客从 CloudBase 迁移至云主机</h1><div class=post-meta><span class=post-time>2022-07-16 17:20:26</span>
+<span class=more-meta>约 2200 字</span>
+<span class=more-meta>预计阅读 5 分钟</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><a href=#迁移起因>迁移起因</a><ul><li><a href=#原来的博客>原来的博客</a></li><li><a href=#出现了变故>出现了变故</a></li><li><a href=#思路变更>思路变更</a></li></ul></li><li><a href=#第一版方案>第一版方案</a><ul><li><a href=#github-pages-部署>Github Pages 部署</a></li><li><a href=#cloudbase-部署>CloudBase 部署</a></li></ul></li><li><a href=#第二版方案>第二版方案</a><ul><li><a href=#云服务器部署>云服务器部署</a></li><li><a href=#日志统计>日志统计</a></li></ul></li></ul></nav></div></div><div class=post-content><p>本来博客部署在 CloudBase 也挺好，没有什么访问量的博客一个月也花不了几毛钱，在这个上面基本是无感了。奈何腾讯准备更改 CloudBase 的计费模式，为了省那一点钱，还是将博客迁移到自己的服务器上吧。</p><h2 id=迁移起因>迁移起因</h2><h3 id=原来的博客>原来的博客</h3><p>其实从很久以前就想要写博客，但总是断断续续的，一直都没有认真地开始。</p><p>最终，决定使用静态博客工具作为自己博客的承载体。在多种工具的比较下，最终选择了 Hugo 并部署到 Github Pages 上，并同时部署到腾讯云的 CloudBase 以供国内用户访问。</p><p>自此，2022 年 5 月 15 日，<a href=https://fatedeity.cn>翔仔的个人博客</a>终于部署到公网上了。</p><h3 id=出现了变故>出现了变故</h3><p>但是，才经过大概 2 个月的时间，收到了腾讯云发送的 CloudBase 计费模式变更的消息。</p><p><img src=assets/%E8%85%BE%E8%AE%AF%E4%BA%91CloudBase%E8%AE%A1%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%8D%87%E7%BA%A7.png alt="腾讯云 CloudBase 计费模式升级"></p><p>简单来说，CloudBase 出了一个最低消费，像我这样的，原本从几毛钱的无感消费要升级到几十块，这个变动对于我来说还是挺大的。</p><h3 id=思路变更>思路变更</h3><p>此处要赶爷，爷自有去处。</p><p>突然想到，曾经自己用 299 买的云服务器一直荒废没有使用，毕竟还有好几个月的期限呢，一定要利用起来。</p><p>就决定是你了，我的博客暂时先放置在云服务器上，顺便了解一下如何部署静态博客到云服务器上。</p><h2 id=第一版方案>第一版方案</h2><p>不可否认，现在流行的自动化部署真的是用一次就爱上了，尤其是，还有 Github Action 这样的免费资源可以薅，哈哈哈。</p><h3 id=github-pages-部署>Github Pages 部署</h3><p>将 Hugo 通过 Github Action 部署到 Github Pages 非常简单，在网上也有很多教程可用，这里就简单地列举一下吧。</p><p>第一步，通常就是要建立一个私有库存储博客的源文件，再建立一个 Github Pages 库存储 Hugo 构建后的文件。</p><p>第二步，自然就是在 Hugo 博客项目下编写 workflow 文件，这里有使用到 <a href=https://github.com/marketplace/actions/checkout>Checkout</a>、<a href=https://github.com/marketplace/actions/hugo-setup>Hugo setup</a>、<a href=https://github.com/marketplace/actions/github-pages-action>GitHub Pages action</a> 三种 Action 步骤，当时的配置如下：</p><pre><code class=language-yaml>on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 切换分支
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # 安装 Hugo 程序
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+           hugo-version: 'latest'
+           extended: true
+
+      # Hugo Build
+      - name: Build
+        run: hugo --minify --gc
+
+      # 部署到 Github Pages 上
+      - name: Deploy Github Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          external_repository: fatedeity/fatedeity.github.io
+          publish_branch: master
+          cname: fatedeity.cn
+</code></pre><p>在这一步，需要配置一个 Actions secrets 以解决安全性问题，可以通过 <a href=https://github.com/marketplace/actions/github-pages-action#%EF%B8%8F-set-ssh-private-key-deploy_key>GitHub Pages action</a> 了解更多。</p><p>经过上述两个配置步骤，基本上是已经完成了，之后 Hugo 博客文件再 push 到 Github 时就会自动触发部署，期间基本上能在 20s 左右完成。</p><h3 id=cloudbase-部署>CloudBase 部署</h3><p>使用 Github Action 部署 Github Pages 非常简单，毕竟也算是同出一家，基本上不会出现什么问题。</p><p>因为想要通过部署到 CloudBase 以加速国内 IP 访问博客的速度，也不得不研究一下怎么通过 Github Action 部署到 CloudBase 上。</p><p>仔细查找了一下，基本上就两种方案：通过 CloudBase CLI 使用命令行部署；通过官方提供的 <a href=https://github.com/marketplace/actions/tencent-cloudbase-github-action>Tencent CloudBase Github Action</a> 工具部署。</p><p>最终，决定使用 Action 工具，相信与 Github Action 更配（实际操作起来并没有😳），下面是简单的一个配置步骤：</p><p>第一步，添加 CloudBase Action v2 所需的配置文件，由于我只使用了 CloudBase 的静态博客部署，配置起来也不麻烦，主要是需要在项目根目录下创建 cloudbaserc.json 文件，填入以下配置：</p><pre><code class=language-json>{
+    &quot;envId&quot;: &quot;{{ENV_ID}}&quot;,
+    &quot;region&quot;: &quot;ap-guangzhou&quot;,
+    &quot;$schema&quot;: &quot;https://framework-1258016615.tcloudbaseapp.com/schema/latest.json&quot;,
+    &quot;framework&quot;: {
+        &quot;name&quot;: &quot;x-blog&quot;,
+        &quot;plugins&quot;: {
+            &quot;client&quot;: {
+                &quot;use&quot;: &quot;@cloudbase/framework-plugin-website&quot;,
+                &quot;inputs&quot;: {
+                    &quot;outputPath&quot;: &quot;public&quot;,
+                    &quot;cloudPath&quot;: &quot;/&quot;
+                }
+            }
+        }
+    }
+}
+</code></pre><p>第二步，更新之前的 workflow 文件，将 Cloudbase Action 的步骤配置进去，当时的配置如下：</p><pre><code class=language-yaml>on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 切换分支
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # 安装 Hugo 程序
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+           hugo-version: 'latest'
+           extended: true
+
+      # Hugo Build
+      - name: Build
+        run: hugo --minify --gc
+
+      # 部署到 Github Pages 上
+
+      # 部署到 CloudBase 上
+      - name: Deploy Tencent CloudBase
+        uses: TencentCloudBase/cloudbase-action@v2.0.1
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          secretId: ${{ secrets.SECRET_ID }}
+          secretKey: ${{ secrets.SECRET_KEY }}
+          envId: ${{ secrets.ENV_ID }}
+</code></pre><p>通过上述的步骤，基本上也算是完成了 Github Action 到 CloudBase 的配置。</p><p>但是，使用起来并不是很顺利，经常性地出现 Github Action 运行超时的情况，应该是 Github Action 机器在美国，而 CloudBase 服务器在国内的原因。</p><p>当时也没有找到什么好的解决办法，只能通过每次报失败之后再手动去运行一遍（从自动化部署变成了半自动化😆）。</p><h2 id=第二版方案>第二版方案</h2><h3 id=云服务器部署>云服务器部署</h3><p>将项目部署到自己的云服务器上，方法就变得更多了，既有使用 <a href=https://github.com/marketplace/actions/ssh-remote-commands>SSH Remote Commands</a> 通过 ssh 工具运行命令，也有使用 SCP、Rsync、SFTP 等工具将文件直接上传，还有更多其他的办法等等。</p><p>对比之后，还是采用了理解起来最简单的办法，通过 <a href=https://github.com/marketplace/actions/ssh-remote-commands>SSH Remote Commands</a> 连接到云服务器上执行命令，这个命令也很容易理解，就是通过 Git 命令拉取 Github Pages 的代码。</p><p>第一步，先在云服务上做好准备，安装好 Git 程序，确定能手动拉取到 Github Pages 的代码。</p><p>第二步，当然还是要更新 workflow 文件，将 SSH Remote Commands Action 的步骤替换掉原来的 CloudBase Action 的步骤，具体的配置如下：</p><pre><code class=language-yaml>on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 切换分支
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # 安装 Hugo 程序
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+           hugo-version: 'latest'
+           extended: true
+
+      # Hugo Build
+      - name: Build
+        run: hugo --minify --gc
+
+      # 部署到 Github Pages 上
+
+      # 部署到 Server 上
+      - name: Deploy Tecent Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: rm -rf fatedeity.github.io/ &amp;&amp; git clone https://ghproxy.com/https://github.com/fatedeity/fatedeity.github.io.git
+</code></pre><p>这里有个小技巧，将 Github 通过 <a href=https://ghproxy.com/>GitHub Proxy 代理加速</a> 访问，原本比较慢的拉取代码步骤变得飞快，综合下来，这个静态博客部署完成只需花费 30ms 左右的时间。</p><p>第三步，代码被自动拉取到服务器上之后，还需要配置一个反向代理的服务器以供外网访问。最常用的自然就是 Nginx 服务器了，安装 Nginx 的步骤就直接忽略吧，下面是我这边访问静态博客的反向代理配置：</p><pre><code class=language-nginx>log_format main escape=json '{&quot;remote_addr&quot;:&quot;$remote_addr&quot;,&quot;timestamp&quot;:&quot;$time_iso8601&quot;,&quot;request&quot;:&quot;$request&quot;,&quot;size&quot;:$body_bytes_sent,&quot;status&quot;:$status,&quot;request_time&quot;:$request_time,&quot;referer&quot;:&quot;$http_referer&quot;,&quot;user_agent&quot;:&quot;$http_user_agent&quot;}';
+
+server {
+    listen      80;
+    listen      [::]:80;
+
+    server_name fatedeity.cn;
+
+    return      301 https://$host$request_uri;
+}
+
+server {
+    listen      443 ssl;
+    listen      [::]:443 ssl;
+
+    server_name fatedeity.cn;
+
+    # 证书
+    ssl_certificate             cert/fatedeity.cn_bundle.crt;
+    # 私钥
+    ssl_certificate_key         cert/fatedeity.cn.key;
+    ssl_session_timeout         5m;
+    ssl_protocols               TLSv1.2 TLSv1.3;
+    ssl_ciphers                 ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+    ssl_prefer_server_ciphers   on;
+
+    location / {
+        root        /home/fatedeity/fatedeity.github.io/;
+        index       index.html;
+    }
+
+    error_page 404  /404.html;
+
+    access_log /var/log/nginx/x-blog-access.log main;
+}
+</code></pre><h3 id=日志统计>日志统计</h3><p>经过上述的操作记录，基本就完成了 Hugo 到 Github Pages 和 Cloud Server 的配置，其实到这里也就结束了。</p><p>但是，突然想要看一下自己服务器的访问量，之前都没有搞过这些东西，都是在公司有现成的工具可以使用。发现自己的服务器配置并不是很高，搞不来 ELK 那一套，只能另辟蹊径。</p><p>还好，简单一搜，发现有 <a href=https://goaccess.io/>GoAccess</a> 这样的开源实时日志工具可用，非常适合我这样简单看看日志的用户。</p><p>第一步，自然就是安装 GoAccess 工具啦，也很简单，使用 <code>apt install goaccess</code> 命令安装一下即可。</p><p>第二步，配置好 .goaccessrc 文件，我这边的配置很简单，只是需要配置好日志格式、输入输出文件即可：</p><pre><code class=language-plaintext>time-format %H:%M:%S
+date-format %Y-%m-%d
+log-format %^:&quot;%h&quot;,%^:&quot;%dT%t+%^&quot;,%^:&quot;%r&quot;,%^:%b,%^:%D,%^:&quot;%R&quot;,%^:&quot;%u&quot;
+
+log-file /var/log/nginx/x-blog-access.log
+output /home/fatedeity/logs/x-blog.html
+</code></pre><p>第三步，这边主要是想要通过浏览器访问一下日志，每次想访问的时候使用下面的命令生成一下，也不麻烦，当然也可以定时更新：</p><pre><code class=language-bash>goaccess -p /home/fatedeity/.goaccessrc
+</code></pre><p>这样就大功告成了，展示一下 GoAccess 的空页面：</p><p><img src=assets/GoAccess%E7%A9%BA%E6%95%B0%E6%8D%AE%E9%A1%B5%E9%9D%A2.png alt=GoAccess空数据页面></p></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
+<span class=item-content>翔仔</span></p><p class=copyright-item><span class=item-title>原始文档</span>
+<span class=item-content><a class=link-to-markdown href=https://fatedeity.cn/posts/z-turn/blog-migration-from-cloudbase-to-server.md target=_blank>☞ 跳转阅读 ☜</a></span></p><p class=copyright-item><span class=item-title>许可协议</span>
+<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><span class=item-title>相关分类</span>
+<a href=/categories/%E6%8A%98%E8%85%BE%E6%97%A5%E5%BF%97.html>折腾日志</a></div><div class=post-tags><span class=item-title>相关标签</span>
+<a href=/tags/%E5%8D%9A%E5%AE%A2.html>博客</a>
+<a href=/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8.html>服务器</a></div><nav class=post-nav><a class=next href=/posts/leetcode/add-two-numbers.html><span class="next-text nav-default">LeetCode - 两数相加</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="fa fa-angle-double-right" aria-hidden=true></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=copyright><span class=power-by>由 <a class=hugo-link href=https://gohugo.io>Hugo</a> 强力驱动</span>
+<span class=division>|</span>
+<span class=theme-info>主题 -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a></span>
+<span class=copyright-year><span>&copy;2022</span>
+<span class=heart><i class="fa fa-heart" aria-hidden=true></i></span>
+<span>翔仔</span><span class=division> |</span>
+<a class=icp href=http://beian.miit.gov.cn/ target=_blank>粤ICP备2021076569号</a></span></div></footer><div class=back-to-top id=back-to-top><i class="fa fa-angle-double-up" aria-hidden=true></i></div></div><script src="/lib/highlight/highlight.pack.js?v=20171001"></script><script src=/lib/clipboard/clipboard.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin=anonymous></script>
+<script>var languageCode="zh-cn".replace(/-/g,"_").replace(/_(.*)/,function(e,t){return e.replace(t,t.toUpperCase())});timeago().render(document.querySelectorAll(".timeago"),languageCode),timeago.cancel()</script><script src=https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js integrity=sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP crossorigin=anonymous></script>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css integrity=sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF crossorigin=anonymous><script type=text/javascript src=/js/main.min.81c20bd77a307fbc9380bca98d43863096ad49e65bfa5d6ae83e3a97ce4c90f0.js></script><script type=text/javascript>const copyButton=document.createElement("button"),codeTrNodeList=document.querySelectorAll("figure.highlight table tbody tr");for(let e=0;e<codeTrNodeList.length;e++){const t=codeTrNodeList[e];for(const n of t.getElementsByClassName("code"))n.className+=" "+`copy-code-${e}`;t.appendChild(copyButton),copyButton.outerHTML=`<button class="copy-btn btn" data-clipboard-action="copy" data-clipboard-target="td.copy-code-${e}">`+"复制</button>"}const clipboard=new ClipboardJS(".btn");clipboard.on("success",function(e){const t=document.querySelectorAll("figure.highlight button.copy-btn");for(const e of t)e.innerText="复制";e.trigger.innerText="已复制",setTimeout(()=>{e.trigger.innerText="复制"},3e3),e.clearSelection()})</script>
+<script type=text/javascript>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]}}</script><script async src=https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin=anonymous></script>
+<script id=baidu_push>(function(){if(window.location.hostname==="localhost")return;var t,n,e=document.createElement("script");e.async=!0,n=window.location.protocol.split(":")[0],n==="https"?e.src="https://zz.bdstatic.com/linksubmit/push.js":e.src="http://push.zhanzhang.baidu.com/push.js",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script></body></html>
