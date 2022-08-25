@@ -90,7 +90,10 @@
 ```java
 package cn.fatedeity.designpattern.polymorphism;
 
-public class extendCase {
+/**
+ * 通过继承实现多态
+ */
+public class ExtendCase {
     private static void test(Base base) {
         System.out.println(base.getSize());
     }
@@ -138,6 +141,9 @@ class Base {
 ```java
 package cn.fatedeity.designpattern.polymorphism;
 
+/**
+ * 通过接口实现多态
+ */
 public class ImplementsCase {
     private static void test(InterfaceBase base) {
         System.out.println(base.toString());

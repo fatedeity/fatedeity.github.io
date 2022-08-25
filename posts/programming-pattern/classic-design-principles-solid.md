@@ -161,8 +161,8 @@ public class DependencyInjectionCase {
         dependencyInjectionCase0.sendMessage("sms", "sms message");
 
         MessageSender inboxSender = new InboxSender();
-        DependencyInjectionCase dependencyInjectionCase1 = new DependencyInjectionCase(smsSender);
-        // SmsSender inbox send inbox message
+        DependencyInjectionCase dependencyInjectionCase1 = new DependencyInjectionCase(inboxSender);
+        // InboxSender inbox send inbox message
         dependencyInjectionCase1.sendMessage("inbox", "inbox message");
     }
 }
