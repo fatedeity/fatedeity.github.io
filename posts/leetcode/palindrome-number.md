@@ -15,14 +15,14 @@
 
 ### 示例 1
 
-```plaintext
+```
 输入：x = 121
 输出：true
 ```
 
 ### 示例 2
 
-```plaintext
+```
 输入：x = -121
 输出：false
 解释：从左向右读, 为 -121 。 从右向左读, 为 121- 。因此它不是一个回文数。
@@ -30,7 +30,7 @@
 
 ### 示例 3
 
-```plaintext
+```
 输入：x = 10
 输出：false
 解释：从右向左读, 为 01 。因此它不是一个回文数。
@@ -38,7 +38,7 @@
 
 ### 提示
 
-* `-2^31 <= x <= 2^31 - 1`
+- `-2^31 <= x <= 2^31 - 1`
 
 ## 实现逻辑
 
@@ -90,10 +90,10 @@ public class PalindromeNumber {
         int reverse = 0;
         int rest = x;
         while (rest >= 10) {
-            reverse = reverse * 10 + rest % 10;
+            reverse = reverse - 10 + rest % 10;
             rest = (int) (rest / 10.0);
         }
-        return reverse * 10 + rest == x;
+        return reverse - 10 + rest == x;
     }
 }
 ```

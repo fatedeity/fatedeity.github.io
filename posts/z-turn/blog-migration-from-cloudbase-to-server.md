@@ -11,7 +11,7 @@
 
 最终，决定使用静态博客工具作为自己博客的承载体。在多种工具的比较下，最终选择了 Hugo 并部署到 Github Pages 上，并同时部署到腾讯云的 CloudBase 以供国内用户访问。
 
-自此，2022 年 5 月 15 日，[翔仔的个人博客](https://fatedeity.cn)终于部署到公网上了。
+自此，2022 年 5 月 15 日，[翔仔的个人博客](https://fatedeity.cn) 终于部署到公网上了。
 
 ### 出现了变故
 
@@ -90,7 +90,7 @@ jobs:
 
 仔细查找了一下，基本上就两种方案：通过 CloudBase CLI 使用命令行部署；通过官方提供的 [Tencent CloudBase Github Action](https://github.com/marketplace/actions/tencent-cloudbase-github-action) 工具部署。
 
-最终，决定使用 Action 工具，相信与 Github Action 更配（实际操作起来并没有😳），下面是简单的一个配置步骤：
+最终，决定使用 Action 工具，相信与 Github Action 更配（实际操作起来并没有 😳），下面是简单的一个配置步骤：
 
 第一步，添加 CloudBase Action v2 所需的配置文件，由于我只使用了 CloudBase 的静态博客部署，配置起来也不麻烦，主要是需要在项目根目录下创建 cloudbaserc.json 文件，填入以下配置：
 
@@ -142,8 +142,6 @@ jobs:
       - name: Build
         run: hugo --minify --gc
 
-      # 部署到 Github Pages 上
-
       # 部署到 CloudBase 上
       - name: Deploy Tencent CloudBase
         uses: TencentCloudBase/cloudbase-action@v2.0.1
@@ -158,7 +156,7 @@ jobs:
 
 但是，使用起来并不是很顺利，经常性地出现 Github Action 运行超时的情况，应该是 Github Action 机器在美国，而 CloudBase 服务器在国内的原因。
 
-当时也没有找到什么好的解决办法，只能通过每次报失败之后再手动去运行一遍（从自动化部署变成了半自动化😆）。
+当时也没有找到什么好的解决办法，只能通过每次报失败之后再手动去运行一遍（从自动化部署变成了半自动化 😆）。
 
 ## 第二版方案
 
@@ -199,6 +197,14 @@ jobs:
         run: hugo --minify --gc
 
       # 部署到 Github Pages 上
+      - name: Deploy Github Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          external_repository: fatedeity/fatedeity.github.io
+          publish_branch: master
+          cname: fatedeity.cn
 
       # 部署到 Server 上
       - name: Deploy Tecent Server
@@ -208,7 +214,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          script: rm -rf fatedeity.github.io/ && git clone https://ghproxy.com/https://github.com/fatedeity/fatedeity.github.io.git
+          script: rm -rf fatedeity.github.io/ && git clone https://ghproxy.com/https://github.com/fatedeity/fatedeity.github.io.git && rm -rf fatedeity.github.io/.[!.]*
 ```
 
 这里有个小技巧，将 Github 通过 [GitHub Proxy 代理加速](https://ghproxy.com/) 访问，原本比较慢的拉取代码步骤变得飞快，综合下来，这个静态博客部署完成只需花费 30ms 左右的时间。
@@ -265,7 +271,7 @@ server {
 
 第二步，配置好 .goaccessrc 文件，我这边的配置很简单，只是需要配置好日志格式、输入输出文件即可：
 
-```plaintext
+```
 time-format %H:%M:%S
 date-format %Y-%m-%d
 log-format %^:"%h",%^:"%dT%t+%^",%^:"%r",%^:%b,%^:%D,%^:"%R",%^:"%u"
@@ -276,7 +282,7 @@ output /home/fatedeity/logs/x-blog.html
 
 第三步，这边主要是想要通过浏览器访问一下日志，每次想访问的时候使用下面的命令生成一下，也不麻烦，当然也可以定时更新：
 
-```bash
+```shell
 goaccess -p /home/fatedeity/.goaccessrc
 ```
 
