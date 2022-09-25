@@ -20,18 +20,17 @@
 它们的区别还可以使用以下的经典例子解释：
 
 > 顾客走进一家餐厅点餐，根据用户不同的选择，可以利用工厂模式来制作不同的食物，比如披萨、汉堡、沙拉。对于披萨来说，用户又有各种配料可以定制，比如奶酪、西红柿、起司，可以通过建造者模式根据用户选择的不同配料来制作披萨。
->
 
 ## 实现方式
 
 传统的建造者模式会包括以下 4 部分：
 
-- 建造者 Builder 抽象类：构建对象的抽象类，包括 `buildPartX（）` 相关的构建对象方法，以及 `getResult()` 这样获取实际对象的方法
-- 建造者 ConcreteBuilder 具体类：继承自 Builder 抽象类，完善及构建自己特殊的 `buildPartX()` 方法
-- 指挥者 Director 具体类：与客户端对接，然后根据需要创建出所需的对象，可以看做是一个代理
-- 产品 Product 具体类：实际被构建出来的实际产品类
+- 建造者 `Builder` 抽象类：构建对象的抽象类，包括 `buildPartX（）` 相关的构建对象方法，以及 `getResult()` 这样获取实际对象的方法
+- 建造者 `ConcreteBuilder` 具体类：继承自 `Builder` 抽象类，完善及构建自己特殊的 `buildPartX()` 方法
+- 指挥者 `Director` 具体类：与客户端对接，然后根据需要创建出所需的对象，可以看做是一个代理
+- 产品 `Product` 具体类：实际被构建出来的实际产品类
 
-简单的 Builder 抽象类代码示例如下：
+简单的 `Builder` 抽象类代码示例如下：
 
 ```java
 public abstract class Builder {
@@ -41,7 +40,7 @@ public abstract class Builder {
 }
 ```
 
-具体的 ConcreteBuilder 类代码示例如下：
+具体的 `ConcreteBuilder` 类代码示例如下：
 
 ```java
 public class ConcreteBuilder extends Builder {
@@ -61,7 +60,7 @@ public class ConcreteBuilder extends Builder {
 }
 ```
 
-产品 Product 类代码示例如下：
+产品 `Product` 类代码示例如下：
 
 ```java
 public class Product {
@@ -78,7 +77,7 @@ public class Product {
 }
 ```
 
-指挥者 Director 类代码示例如下：
+指挥者 `Director` 类代码示例如下：
 
 ```java
 public class Director {
@@ -104,9 +103,9 @@ public class Director {
 
 传统的建造者模式所需的部分较多，在实际开发过程中，是需要简化系统结构，减少程序当中类的个数，并且降低用户的使用成本。
 
-另一个常见的使用方式是，通过直接将 Builder 类作为产品类的静态内部类，这种方式更多的是降低较多成员变量时构建对象的复杂度。
+另一个常见的使用方式是，通过直接将 `Builder` 类作为产品类的静态内部类，这种方式更多的是降低较多成员变量时构建对象的复杂度。
 
-以下是创建 ResourcePoolConfig 类的建造者模式代码示例：
+以下是创建 `ResourcePoolConfig` 类的建造者模式代码示例：
 
 ```java
 public class ResourcePoolConfig {
@@ -179,7 +178,7 @@ public class ResourcePoolConfig {
 }
 ```
 
-以下是 ResourcePoolConfig 类建造者模式的使用方式：
+以下是 `ResourcePoolConfig` 类建造者模式的使用方式：
 
 ```java
 ResourcePoolConfig config = new ResourcePoolConfig.Builder()
@@ -215,15 +214,15 @@ ResourcePoolConfig config = new ResourcePoolConfig.Builder()
 
 - 类的内部非常复杂，包含多个成员变量
 - 类的属性之间有一定的依赖关系或者约束条件，需要指定其生成顺序
-- 希望创建的对象是不可变的，在对象创建之后不能修改对象内部的属性值，暴露 setter 方法的创建对象方式就不适用了
+- 希望创建的对象是不可变的，在对象创建之后不能修改对象内部的属性值，暴露 `setter()` 方法的创建对象方式就不适用了
 
 ### 源码
 
 在 JDK 中，`java.lang.StringBuilder` 是经典的建造者模式。
 
-其中具体的如 `append()`、`delete()`、`reverse()` 等方法都是直接返回当前 StringBuilder 对象，其可以再继续调动类似的方法以构建出一个想要的 StringBuilder 对象。
+其中具体的如 `append()`、`delete()`、`reverse()` 等方法都是直接返回当前 `StringBuilder` 对象，其可以再继续调动类似的方法以构建出一个想要的 `StringBuilder` 对象。
 
-如下是使用 StringBuilder 的一个代码示例：
+如下是使用 `StringBuilder` 的一个代码示例：
 
 ```java
 StringBuilder stringBuilder = new StringBuilder()

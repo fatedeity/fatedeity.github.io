@@ -23,7 +23,7 @@
 
 下面是使用果汁生产来展示简单工厂模式：
 
-果汁 FruitJuice 接口：描述生产果汁的必要方法
+果汁 `FruitJuice` 接口：描述生产果汁的必要方法
 
 ```java
 public interface FruitJuice {
@@ -31,7 +31,7 @@ public interface FruitJuice {
 }
 ```
 
-苹果汁 AppleJuice 类：生产苹果汁的类
+苹果汁 `AppleJuice` 类：生产苹果汁的类
 
 ```java
 public class AppleJuice implements FruitJuice {
@@ -46,7 +46,7 @@ public class AppleJuice implements FruitJuice {
 }
 ```
 
-橙汁 OrangeJuice 类：生产橙汁的类
+橙汁 `OrangeJuice` 类：生产橙汁的类
 
 ```java
 public class OrangeJuice implements FruitJuice {
@@ -61,7 +61,7 @@ public class OrangeJuice implements FruitJuice {
 }
 ```
 
-果汁工厂 FruitJuiceFactory 类：负责生产各种果汁的类
+果汁工厂 `FruitJuiceFactory` 类：负责生产各种果汁的类
 
 ```java
 public class FruitJuiceFactory {
@@ -79,7 +79,7 @@ public class FruitJuiceFactory {
 }
 ```
 
-通过 if-else 逻辑是简单工厂的第一种实现方法，还可以通过静态代码块和 Map 结构实现简单工厂模式，具体的代码示例如下：
+通过 if-else 逻辑是简单工厂的第一种实现方法，还可以通过静态代码块和 `Map` 结构实现简单工厂模式，具体的代码示例如下：
 
 ```java
 import java.util.Map;
@@ -190,7 +190,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
 
 在上述简单工厂模式的基础上，将果汁生产改造成工厂方法模式：
 
-抽象工厂 AbstractFactory 接口：描述生产果汁工厂的必要方法
+抽象工厂 `AbstractFactory` 接口：描述生产果汁工厂的必要方法
 
 ```java
 public interface FruitJuiceFactory {
@@ -198,7 +198,7 @@ public interface FruitJuiceFactory {
 }
 ```
 
-苹果汁工厂 AppleJuiceFactory 类：详细的生产苹果汁的类
+苹果汁工厂 `AppleJuiceFactory` 类：详细的生产苹果汁的类
 
 ```java
 public class AppleJuiceFactory implements FruitJuiceFactory {
@@ -211,7 +211,7 @@ public class AppleJuiceFactory implements FruitJuiceFactory {
 }
 ```
 
-橙汁工厂 OrangeJuiceFactory 类：详细的生产橙汁的类
+橙汁工厂 `OrangeJuiceFactory` 类：详细的生产橙汁的类
 
 ```java
 public class OrangeJuiceFactory implements FruitJuiceFactory {
@@ -265,7 +265,7 @@ public class OrangeJuiceFactory implements FruitJuiceFactory {
 
 在上述简单工厂模式的基础上，下面使用果汁生产和酒生产来展示抽象工厂模式：
 
-酒 Alcohol 接口：描述生产酒的必要方法
+酒 `Alcohol` 接口：描述生产酒的必要方法
 
 ```java
 public interface Alcohol {
@@ -273,7 +273,7 @@ public interface Alcohol {
 }
 ```
 
-葡萄酒 Wine 类：详细的生产葡萄酒的类
+葡萄酒 `Wine` 类：详细的生产葡萄酒的类
 
 ```java
 public class Wine implements Alcohol {
@@ -288,7 +288,7 @@ public class Wine implements Alcohol {
 }
 ```
 
-啤酒 Beer 类：详细的生产啤酒的类
+啤酒 `Beer` 类：详细的生产啤酒的类
 
 ```java
 public class Beer implements Alcohol {
@@ -303,7 +303,7 @@ public class Beer implements Alcohol {
 }
 ```
 
-抽象工厂 AbstractFactory 接口：描述生产果汁和酒的必要方法
+抽象工厂 `AbstractFactory` 接口：描述生产果汁和酒的必要方法
 
 ```java
 public interface AbstractFactory {
@@ -312,7 +312,7 @@ public interface AbstractFactory {
 }
 ```
 
-具体工厂 ConcreteFactory 类：可生产果汁和酒的工厂的类
+具体工厂 `ConcreteFactory` 类：可生产果汁和酒的工厂的类
 
 ```java
 public class ConcreteFactory implements AbstractFactory {

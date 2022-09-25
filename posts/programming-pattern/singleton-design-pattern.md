@@ -182,7 +182,7 @@ public class Singleton {
 
 这种方式采用类装载机制来保证初始化实例时只有一个线程。
 
-静态内部类方式在单例类被加载的时候并不会立即实例化，而是在调用 `getInstance()` 方法的时候，才会装载 SingletonHolder 类，从而实现单例类的实例化。
+静态内部类方式在单例类被加载的时候并不会立即实例化，而是在调用 `getInstance()` 方法的时候，才会装载 `SingletonHolder` 类，从而实现单例类的实例化。
 
 类的静态属性只会在第一次加载类的时候初始化，实例的唯一性、创建过程的线程安全性，都由 JVM 来保证。
 
@@ -333,7 +333,7 @@ public class Multipleton {
 
 在 JDK 中，`java.lang.Runtime` 是经典的单例模式，其用于与 Java 运行时环境进行交互。
 
-Runtime 类是一个典型的饿汉式单例模式实现，如下是其的一些实现逻辑：
+`Runtime` 类是一个典型的饿汉式单例模式实现，如下是其的一些实现逻辑：
 
 ```java
 public class Runtime {

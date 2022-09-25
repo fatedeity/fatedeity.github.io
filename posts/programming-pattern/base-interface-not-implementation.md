@@ -83,9 +83,9 @@ Java 既支持接口，也支持抽象类，这里主要拿 Java 的接口和抽
 
 比如，在 Java 类库中有以下关系：
 
-- Collection 接口和对应的 AbstractCollection 抽象类
-- List 接口和对应的 AbstractList 抽象类
-- Map 接口和对应的 AbstractMap 抽象类
+- `Collection` 接口和对应的 `AbstractCollection` 抽象类
+- `List` 接口和对应的 `AbstractList` 抽象类
+- `Map` 接口和对应的 `AbstractMap` 抽象类
 
 ## 模拟抽象类和接口
 
