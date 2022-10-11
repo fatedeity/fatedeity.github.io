@@ -1,0 +1,133 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>初识设计模式 - 组合模式 - 翔仔的个人博客</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="翔仔"><meta name=description content="组合设计模式（Composite Design Pattern）其应用场景非常特殊，主要用于处理树形结构数据，它可以让叶子对象和容器对象的使用具有一致性。
+"><meta name=keywords content="翔仔,博客,技术,后端,编程"><meta name=google-site-verification content="NSfr_TOb9-BVneo8k_7eO6vn7dy9XsG3KB7jBQD8hiA"><meta name=generator content="Hugo 0.104.3 with theme even"><link rel=canonical href=https://fatedeity.cn/posts/programming-pattern/composite-design-pattern.html><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fontsource/ubuntu@4.5.10/index.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fontsource/ubuntu-mono@4.5.10/index.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.6.0/style.min.css><link href=/sass/main.min.466d95d92b3e86c21b7745db96b56f5c5c393becb940470cccf6e7a939113b96.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>翔仔的个人博客</a></div><div class=mobile-navbar-icon><span></span>
+<span></span>
+<span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>首页</li></a><a href=/categories.html><li class=mobile-menu-item>分类</li></a><a href=/tags.html><li class=mobile-menu-item>标签</li></a><a href=/posts.html><li class=mobile-menu-item>归档</li></a><a href=/about.html><li class=mobile-menu-item>关于</li></a><a href=/index.xml><li class=mobile-menu-item>订阅</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>翔仔的个人博客</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>首页</a></li><li class=menu-item><a class=menu-item-link href=/categories.html>分类</a></li><li class=menu-item><a class=menu-item-link href=/tags.html>标签</a></li><li class=menu-item><a class=menu-item-link href=/posts.html>归档</a></li><li class=menu-item><a class=menu-item-link href=/about.html>关于</a></li><li class=menu-item><a class=menu-item-link href=/index.xml>订阅</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>初识设计模式 - 组合模式</h1><div class=post-meta><span class=post-time>2022-10-11 08:51:21</span>
+<span class=more-meta>约 1460 字</span>
+<span class=more-meta>预计阅读 3 分钟</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><a href=#简介>简介</a></li><li><a href=#具体实现>具体实现</a></li><li><a href=#分类>分类</a><ul><li><a href=#透明组合模式>透明组合模式</a></li><li><a href=#安全组合模式>安全组合模式</a></li></ul></li><li><a href=#总结>总结</a><ul><li><a href=#优点>优点</a></li><li><a href=#缺点>缺点</a></li><li><a href=#适用场景>适用场景</a></li><li><a href=#源码>源码</a></li></ul></li></ul></nav></div></div><div class=post-content><p>组合设计模式（Composite Design Pattern）其应用场景非常特殊，主要用于处理树形结构数据，它可以让叶子对象和容器对象的使用具有一致性。</p><h2 id=简介>简介</h2><p>组合模式就是组合多个对象形成树形结构以表示具有“部分 - 整体”关系的层次结构。组合模式对单个对象（叶子对象）和组合对象（容器对象）的使用具有一致性。</p><p>组合模式的关键是定义一个抽象构件类，它既可以代表叶子，也可以代表容器。客户端针对该抽象构件进行编程，无需知道它到底表示的是叶子还是容器，可以对其进行统一处理。</p><h2 id=具体实现>具体实现</h2><p>对于组合模式的抽象构件角色，其代码示例如下：</p><pre><code class=language-java>public abstract class Component {
+    // 增加成员
+    public abstract void add(Component c);
+
+    // 删除成员
+    public abstract void remove(Component c);
+
+    // 获取成员
+    public abstract Component getChild(int i);
+
+    // 业务方法
+    public abstract void operation();
+}
+</code></pre><p>如果继承抽象构件类的是叶子构件，其代码示例如下：</p><pre><code class=language-java>public class Leaf extends Component {
+    @Override
+    public void add(Component c) {
+        // 增加成员
+        // 异常处理或业务提示
+    }
+
+    @Override
+    public void remove(Component c) {
+        // 删除成员
+        // 异常处理或业务提示
+    }
+
+    @Override
+    public Component getChild(int i) {
+        // 获取成员
+        // 异常处理或业务提示
+    }
+
+    @Override
+    public void operation() {
+        // 业务方法
+        // 叶子构件具体业务方法的实现
+    }
+}
+</code></pre><p>如果继承抽象构件类的是容器构件，其代码示例如下：</p><pre><code class=language-java>import java.util.ArrayList;
+
+public class Composite extends Component {  
+    private final ArrayList&lt;Component&gt; list = new ArrayList&lt;&gt;();  
+  
+    @Override  
+    public void add(Component c) {  
+        // 增加成员  
+        list.add(c);  
+    }  
+  
+    @Override  
+    public void remove(Component c) {  
+        // 删除成员  
+        list.remove(c);  
+    }  
+  
+    @Override  
+    public Component getChild(int i) {  
+        // 获取成员  
+        return (Component) list.get(i);  
+    }  
+  
+    @Override  
+    public void operation() {  
+        // 业务方法  
+        // 叶子构件具体业务方法的实现  
+        // 递归调用成员构件的业务方法  
+        for (Component obj : list) {  
+            obj.operation();  
+        }  
+    }  
+}
+</code></pre><h2 id=分类>分类</h2><p>在使用组合模式时，根据抽象构件类的定义形式，可以将组合模式分为透明组合模式和安全组合模式两种。</p><h3 id=透明组合模式>透明组合模式</h3><p>在透明组合模式中，抽象构件类声明了所有用于管理成员的方法，如 <code>add()</code>、<code>remove()</code>、<code>getChild()</code> 等所有方法。</p><p>透明组合模式也是组合模式的标准形式，这样做的好处是确保所有的构件类都使用相同的接口。</p><p>其缺点就是不够安全，因为叶子对象和容器对象有本质上的区别，对叶子对象提供 <code>add()</code>、<code>remove()</code>、<code>getChild()</code> 等方法是没有意义的，如果没有提供相应的错误处理代码，在运行阶段有可能会出错。</p><h3 id=安全组合模式>安全组合模式</h3><p>在安全组合模式中，抽象构件类没有声明任何管理成员的方法，只声明抽象的业务方法。</p><p>这样的做法是安全的，因为根本不向叶子对象提供这些管理成员对象的方法，对于叶子对象，客户端不可能调用到这些方法。</p><p>相对的，其缺点就是不够透明，因为叶子构件和容器构件具有不同的方法，客户端不能完全针对抽象编程，必须有区别地对待叶子构件和容器构件。</p><h2 id=总结>总结</h2><h3 id=优点>优点</h3><p>组合模式的主要优点如下：</p><ul><li>组合模式为树形结构的面向对象实现提供了一种灵活的解决方案</li><li>在组合模式中增加新的叶子构件和容器构件都很方便，符合开闭原则</li><li>客户端可以一致地使用一个组合结构或其中单个对象，简化了客户端代码</li></ul><h3 id=缺点>缺点</h3><p>组合模式的主要缺点如下：</p><ul><li>设计较复杂，客户端需要花费更多时间理清类之间的层次关系</li><li>在增加新构件时很难对容器中的构件类型进行限制，通常通过运行时进行类型检查来实现</li></ul><h3 id=适用场景>适用场景</h3><p>组合模式的适用场景如下：</p><ul><li>在具有整体和部分的层次结构中，希望通过一种方式忽略整体和部分的差异</li><li>在一个使用面向对象语言开发的系统中需要处理一个树形结构</li></ul><h3 id=源码>源码</h3><p>在 JDK 中，<code>HashMap</code> 也是用到了组合模式，如下是部分代码：</p><pre><code class=language-java>public class HashMap&lt;K,V&gt; extends AbstractMap&lt;K,V&gt;
+    implements Map&lt;K,V&gt;, Cloneable, Serializable {
+
+    public void putAll(Map&lt;? extends K, ? extends V&gt; m) {
+        putMapEntries(m, true);
+    }
+
+    final void putMapEntries(Map&lt;? extends K, ? extends V&gt; m, boolean evict) {
+        int s = m.size();
+        if (s &gt; 0) {
+            if (table == null) { // pre-size
+                float ft = ((float)s / loadFactor) + 1.0F;
+                int t = ((ft &lt; (float)MAXIMUM_CAPACITY) ?
+                         (int)ft : MAXIMUM_CAPACITY);
+                if (t &gt; threshold)
+                    threshold = tableSizeFor(t);
+            } else {
+                // Because of linked-list bucket constraints, we cannot
+                // expand all at once, but can reduce total resize
+                // effort by repeated doubling now vs later
+                while (s &gt; threshold &amp;&amp; table.length &lt; MAXIMUM_CAPACITY)
+                    resize();
+            }
+
+            for (Map.Entry&lt;? extends K, ? extends V&gt; e : m.entrySet()) {
+                K key = e.getKey();
+                V value = e.getValue();
+                putVal(hash(key), key, value, false, evict);
+            }
+        }
+    }
+}
+</code></pre><p><code>putAll()</code> 和 <code>putMapEntries()</code> 都接受一个 <code>Map</code> 结构参数，这个 <code>Map</code> 就是一个抽象构件，<code>HashMap</code> 同样是实现了 <code>Map</code> 结构，轻易实现一个树形的调用结构。</p></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
+<span class=item-content>翔仔</span></p><p class=copyright-item><span class=item-title>原始文档</span>
+<span class=item-content><a class=link-to-markdown href=https://fatedeity.cn/posts/programming-pattern/composite-design-pattern.md target=_blank>☞ 跳转阅读 ☜</a></span></p><p class=copyright-item><span class=item-title>许可协议</span>
+<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><span class=item-title>相关分类</span>
+<a href=/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1.html>程序设计</a></div><div class=post-tags><span class=item-title>相关标签</span>
+<a href=/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html>设计模式</a>
+<a href=/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1.html>面向对象</a></div><nav class=post-nav><a class=next href=/posts/programming-pattern/facade-design-pattern.html><span class="next-text nav-default">初识设计模式 - 外观模式</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="fa fa-angle-double-right" aria-hidden=true></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=copyright><span class=power-by>由 <a class=hugo-link href=https://gohugo.io>Hugo</a> 强力驱动</span>
+<span class=division>|</span>
+<span class=theme-info>主题 -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a></span>
+<span class=copyright-year><span>&copy;2022</span>
+<span class=heart><i class="fa fa-heart" aria-hidden=true></i></span>
+<span>翔仔</span><span class=division> |</span>
+<a class=icp href=http://beian.miit.gov.cn/ target=_blank>粤ICP备2021076569号</a></span></div></footer><div class=back-to-top id=back-to-top><i class="fa fa-angle-double-up" aria-hidden=true></i></div></div><script src="/lib/highlight/highlight.pack.js?v=20171001"></script><script src=/lib/clipboard/clipboard.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin=anonymous></script>
+<script>var languageCode="zh-cn".replace(/-/g,"_").replace(/_(.*)/,function(e,t){return e.replace(t,t.toUpperCase())});timeago().render(document.querySelectorAll(".timeago"),languageCode),timeago.cancel()</script><script src=https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js integrity=sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP crossorigin=anonymous></script>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css integrity=sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF crossorigin=anonymous><script type=text/javascript src=/js/main.min.81c20bd77a307fbc9380bca98d43863096ad49e65bfa5d6ae83e3a97ce4c90f0.js></script><script type=text/javascript>const copyButton=document.createElement("button"),codeTrNodeList=document.querySelectorAll("figure.highlight table tbody tr");for(let e=0;e<codeTrNodeList.length;e++){const t=codeTrNodeList[e];for(const n of t.getElementsByClassName("code"))n.className+=" "+`copy-code-${e}`;t.appendChild(copyButton),copyButton.outerHTML=`<button class="copy-btn btn" data-clipboard-action="copy" data-clipboard-target="td.copy-code-${e}">`+"复制</button>"}const clipboard=new ClipboardJS(".btn");clipboard.on("success",function(e){const t=document.querySelectorAll("figure.highlight button.copy-btn");for(const e of t)e.innerText="复制";e.trigger.innerText="已复制",setTimeout(()=>{e.trigger.innerText="复制"},3e3),e.clearSelection()})</script>
+<script type=text/javascript>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]}}</script><script async src=https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin=anonymous></script>
+<script id=baidu_analytics>var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?aa99b552002ea66dbd02af2665682e36",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script id=baidu_push>(function(){if(window.location.hostname==="localhost")return;var t,n,e=document.createElement("script");e.async=!0,n=window.location.protocol.split(":")[0],n==="https"?e.src="https://zz.bdstatic.com/linksubmit/push.js":e.src="http://push.zhanzhang.baidu.com/push.js",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script></body></html>
