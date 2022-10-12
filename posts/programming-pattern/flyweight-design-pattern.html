@@ -1,0 +1,68 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>初识设计模式 - 享元模式 - 翔仔的个人博客</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="翔仔"><meta name=description content="享元设计模式（Flyweight Design Pattern）通过共享技术实现相同或相似对象的重用，节省内存，前提是享元对象是不可变对象。
+"><meta name=keywords content="翔仔,博客,技术,后端,编程"><meta name=google-site-verification content="NSfr_TOb9-BVneo8k_7eO6vn7dy9XsG3KB7jBQD8hiA"><meta name=generator content="Hugo 0.104.3 with theme even"><link rel=canonical href=https://fatedeity.cn/posts/programming-pattern/flyweight-design-pattern.html><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fontsource/ubuntu@4.5.10/index.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fontsource/ubuntu-mono@4.5.10/index.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.6.0/style.min.css><link href=/sass/main.min.466d95d92b3e86c21b7745db96b56f5c5c393becb940470cccf6e7a939113b96.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>翔仔的个人博客</a></div><div class=mobile-navbar-icon><span></span>
+<span></span>
+<span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>首页</li></a><a href=/categories.html><li class=mobile-menu-item>分类</li></a><a href=/tags.html><li class=mobile-menu-item>标签</li></a><a href=/posts.html><li class=mobile-menu-item>归档</li></a><a href=/about.html><li class=mobile-menu-item>关于</li></a><a href=/index.xml><li class=mobile-menu-item>订阅</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>翔仔的个人博客</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>首页</a></li><li class=menu-item><a class=menu-item-link href=/categories.html>分类</a></li><li class=menu-item><a class=menu-item-link href=/tags.html>标签</a></li><li class=menu-item><a class=menu-item-link href=/posts.html>归档</a></li><li class=menu-item><a class=menu-item-link href=/about.html>关于</a></li><li class=menu-item><a class=menu-item-link href=/index.xml>订阅</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>初识设计模式 - 享元模式</h1><div class=post-meta><span class=post-time>2022-10-12 08:48:39</span>
+<span class=more-meta>约 902 字</span>
+<span class=more-meta>预计阅读 2 分钟</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><a href=#简介>简介</a></li><li><a href=#典型示例>典型示例</a></li><li><a href=#总结>总结</a><ul><li><a href=#优点>优点</a></li><li><a href=#缺点>缺点</a></li><li><a href=#适用场景>适用场景</a></li><li><a href=#源码>源码</a></li></ul></li></ul></nav></div></div><div class=post-content><p>享元设计模式（Flyweight Design Pattern）通过共享技术实现相同或相似对象的重用，节省内存，前提是享元对象是不可变对象。</p><h2 id=简介>简介</h2><p>古代的活字印刷术就有点像享元模式，活字印刷就是将每个字模做出来，再印刷时再选取需要的字模到印刷板上，这样就构成了一页书的印刷板。这样的活字印刷大大提升了效率，减少了印刷板的空间。</p><p>在享元模式中，存储共享实例对象的地方称为享元池（Flyweight Pool）。类比到上述的活字印刷术中，放置字模的地方就是享元池。</p><p>享元模式能做到共享的关键是区分了内部状态和外部状态，它们的简单释义是：</p><ul><li>内部状态：存储在享元对象内部且不跟随环境变化而改变的状态，内部状态可以在对象之间共享</li><li>外部状态：通常由客户端保存，当需要时再传入享元对象中的状态，会跟随环境变化而改变，不可以在对象之间共享。</li></ul><h2 id=典型示例>典型示例</h2><p>一个典型的享元工厂类的代码示例如下：</p><pre><code class=language-java>public class FlyweightFactory {
+    // 使用 HashMap 定义享元池
+    private final HashMap&lt;String, Flyweight&gt; flyweights = new HashMap&lt;&gt;();
+
+    public Flyweight getFlyweight(String key) {
+        // 如果对象存在，直接从享元池中获取
+        if (flyweights.containsKey(key)) {
+            return (Flyweight) flyweights.get(key);
+        } else {
+            // 如果对象不存在，先创建一个新的对象添加到享元池中，然后返回
+            Flyweight fw = new ConcreteFlyweight();
+            flyweights.put(key, fw);
+            return fw;
+        }
+    }
+}
+</code></pre><p>一个典型的享元抽象类的代码示例如下：</p><pre><code class=language-java>public abstract class Flyweight {
+    // 内部状态作为成员对象，同一个享元对象其内部状态是一致的
+    protected Object intrinsicState;
+
+    public Flyweight(Object intrinsicState) {
+        this.intrinsicState = intrinsicState;
+    }
+
+    public void operation(Object extrinsicState) {
+        // 外部状态在使用时由外部提供，每一次都可以不同
+    }
+}
+</code></pre><p>通常，实际会根据业务情况定义具体享元类，代码示例如下：</p><pre><code class=language-java>public class ConcreteFlyweight extends Flyweight {
+    public ConcreteFlyweight(Object intrinsicState) {
+        super(intrinsicState);
+    }
+
+    @Override
+    public void operation(Object extrinsicState) {
+        // 结合内部状态 intrinsicState 以及方法参数传入的 extrinsicState 完成具体逻辑
+    }
+}
+</code></pre><h2 id=总结>总结</h2><h3 id=优点>优点</h3><p>享元模式的主要优点如下：</p><ul><li>极大地减少内存中对象的数量，节约了系统资源，提高了系统性能</li><li>享元模式的外部状态相对独立，而且不会影响其内部状态，从而使得享元对象可以在不同的环境中被共享</li></ul><h3 id=缺点>缺点</h3><p>享元模式的主要缺点如下：</p><ul><li>享元模式需要分离出内部状态和外部状态，从而使得系统变得复杂，这使得程序的逻辑复杂化</li><li>为了使对象可以共享，享元对象需要将部分状态外部化，而读取外部状态将使得运行时间变长</li></ul><h3 id=适用场景>适用场景</h3><p>享元模式的适用场景如下：</p><ul><li>一个系统有大量相同或相似的对象，造成内存大量耗费</li></ul><h3 id=源码>源码</h3><p>在 Java 类库中的 <code>String</code> 类就使用了享元模式，使用字面量创建的对象是共享的，而不会重新为此分配内存空间。</p></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
+<span class=item-content>翔仔</span></p><p class=copyright-item><span class=item-title>原始文档</span>
+<span class=item-content><a class=link-to-markdown href=https://fatedeity.cn/posts/programming-pattern/flyweight-design-pattern.md target=_blank>☞ 跳转阅读 ☜</a></span></p><p class=copyright-item><span class=item-title>许可协议</span>
+<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><span class=item-title>相关分类</span>
+<a href=/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1.html>程序设计</a></div><div class=post-tags><span class=item-title>相关标签</span>
+<a href=/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html>设计模式</a>
+<a href=/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1.html>面向对象</a></div><nav class=post-nav><a class=next href=/posts/programming-pattern/composite-design-pattern.html><span class="next-text nav-default">初识设计模式 - 组合模式</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="fa fa-angle-double-right" aria-hidden=true></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=copyright><span class=power-by>由 <a class=hugo-link href=https://gohugo.io>Hugo</a> 强力驱动</span>
+<span class=division>|</span>
+<span class=theme-info>主题 -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a></span>
+<span class=copyright-year><span>&copy;2022</span>
+<span class=heart><i class="fa fa-heart" aria-hidden=true></i></span>
+<span>翔仔</span><span class=division> |</span>
+<a class=icp href=http://beian.miit.gov.cn/ target=_blank>粤ICP备2021076569号</a></span></div></footer><div class=back-to-top id=back-to-top><i class="fa fa-angle-double-up" aria-hidden=true></i></div></div><script src="/lib/highlight/highlight.pack.js?v=20171001"></script><script src=/lib/clipboard/clipboard.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin=anonymous></script>
+<script>var languageCode="zh-cn".replace(/-/g,"_").replace(/_(.*)/,function(e,t){return e.replace(t,t.toUpperCase())});timeago().render(document.querySelectorAll(".timeago"),languageCode),timeago.cancel()</script><script src=https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js integrity=sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP crossorigin=anonymous></script>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css integrity=sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF crossorigin=anonymous><script type=text/javascript src=/js/main.min.81c20bd77a307fbc9380bca98d43863096ad49e65bfa5d6ae83e3a97ce4c90f0.js></script><script type=text/javascript>const copyButton=document.createElement("button"),codeTrNodeList=document.querySelectorAll("figure.highlight table tbody tr");for(let e=0;e<codeTrNodeList.length;e++){const t=codeTrNodeList[e];for(const n of t.getElementsByClassName("code"))n.className+=" "+`copy-code-${e}`;t.appendChild(copyButton),copyButton.outerHTML=`<button class="copy-btn btn" data-clipboard-action="copy" data-clipboard-target="td.copy-code-${e}">`+"复制</button>"}const clipboard=new ClipboardJS(".btn");clipboard.on("success",function(e){const t=document.querySelectorAll("figure.highlight button.copy-btn");for(const e of t)e.innerText="复制";e.trigger.innerText="已复制",setTimeout(()=>{e.trigger.innerText="复制"},3e3),e.clearSelection()})</script>
+<script type=text/javascript>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]}}</script><script async src=https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin=anonymous></script>
+<script id=baidu_analytics>var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?aa99b552002ea66dbd02af2665682e36",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script id=baidu_push>(function(){if(window.location.hostname==="localhost")return;var t,n,e=document.createElement("script");e.async=!0,n=window.location.protocol.split(":")[0],n==="https"?e.src="https://zz.bdstatic.com/linksubmit/push.js":e.src="http://push.zhanzhang.baidu.com/push.js",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script></body></html>
