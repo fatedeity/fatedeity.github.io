@@ -100,7 +100,7 @@ jobs:
     "region": "ap-guangzhou",
     "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
     "framework": {
-        "name": "x-blog",
+        "name": "hugo-blog",
         "plugins": {
             "client": {
                 "use": "@cloudbase/framework-plugin-website",
@@ -255,7 +255,7 @@ server {
 
     error_page 404  /404.html;
 
-    access_log /var/log/nginx/x-blog-access.log main;
+    access_log /var/log/nginx/hugo-blog-access.log main;
 }
 ```
 
@@ -276,8 +276,8 @@ time-format %H:%M:%S
 date-format %Y-%m-%d
 log-format %^:"%h",%^:"%dT%t+%^",%^:"%r",%^:%b,%^:%D,%^:"%R",%^:"%u"
 
-log-file /var/log/nginx/x-blog-access.log
-output /home/fatedeity/logs/x-blog.html
+log-file /var/log/nginx/hugo-blog-access.log
+output /home/fatedeity/logs/hugo-blog.html
 ```
 
 第三步，这边主要是想要通过浏览器访问一下日志，每次想访问的时候使用下面的命令生成一下，也不麻烦，当然也可以定时更新：
