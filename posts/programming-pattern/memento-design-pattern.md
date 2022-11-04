@@ -110,7 +110,7 @@ public class Date implements java.io.Serializable, Cloneable, Comparable<Date> {
     public Date(long date) {
         fastTime = date;
     }
-    
+
     public long getTime() {
         return getTimeImpl();
     }
