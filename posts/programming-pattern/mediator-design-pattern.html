@@ -1,0 +1,97 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>初识设计模式 - 中介模式 - 翔仔的个人博客</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="翔仔"><meta name=description content="中介模式属于行为型设计模式，可以将原本难以理解的网状结构转换成了相对加单的星型结构，主要用来降低多个对象和类之间的通信复杂性。
+"><meta name=keywords content="翔仔,博客,技术,后端,编程"><meta name=google-site-verification content="NSfr_TOb9-BVneo8k_7eO6vn7dy9XsG3KB7jBQD8hiA"><meta name=generator content="Hugo 0.105.0 with theme even"><link rel=canonical href=https://fatedeity.cn/posts/programming-pattern/mediator-design-pattern.html><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fontsource/ubuntu@4.5.10/index.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fontsource/ubuntu-mono@4.5.10/index.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.6.0/style.min.css><link href=/sass/main.min.3f4efe36e5d917ffbfbf909477b893fb06c5ae8b7044856ff6ab6b93d1534266.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>翔仔的个人博客</a></div><div class=mobile-navbar-icon><span></span>
+<span></span>
+<span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>首页</li></a><a href=/categories.html><li class=mobile-menu-item>分类</li></a><a href=/tags.html><li class=mobile-menu-item>标签</li></a><a href=/posts.html><li class=mobile-menu-item>归档</li></a><a href=/about.html><li class=mobile-menu-item>关于</li></a><a href=/index.xml><li class=mobile-menu-item>订阅</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>翔仔的个人博客</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>首页</a></li><li class=menu-item><a class=menu-item-link href=/categories.html>分类</a></li><li class=menu-item><a class=menu-item-link href=/tags.html>标签</a></li><li class=menu-item><a class=menu-item-link href=/posts.html>归档</a></li><li class=menu-item><a class=menu-item-link href=/about.html>关于</a></li><li class=menu-item><a class=menu-item-link href=/index.xml>订阅</a></li><li id=search-click class=menu-item><a class=menu-item-link href=javascript:void(0)>搜索</a></li></ul></nav></header><div id=fastSearch><input id=searchInput><ul id=searchResults></ul></div><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>初识设计模式 - 中介模式</h1><div class=post-meta><span class=post-time>2022-11-09 08:36:21</span>
+<span class=more-meta>约 969 字</span>
+<span class=more-meta>预计阅读 2 分钟</span>
+<span id=busuanzi_container_page_pv class=more-meta><span id=busuanzi_value_page_pv><img src=/img/spinner.svg alt=spinner.svg></span> 次阅读</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><a href=#简介>简介</a></li><li><a href=#典型实现>典型实现</a></li><li><a href=#总结>总结</a><ul><li><a href=#优点>优点</a></li><li><a href=#缺点>缺点</a></li><li><a href=#适用场景>适用场景</a></li><li><a href=#源码>源码</a></li></ul></li></ul></nav></div></div><div class=post-content><p>中介模式属于行为型设计模式，可以将原本难以理解的网状结构转换成了相对加单的星型结构，主要用来降低多个对象和类之间的通信复杂性。</p><h2 id=简介>简介</h2><p>中介设计模式（Mediator Design Pattern）定义了一个单独的（中介）对象，来封装一组对象之间的交互。</p><p>如果对象之间存在大量的相互关联和调用，若有一个对象发生变化，则需要跟踪和该对象的其他所有对象，并进行适当处理。</p><p>而中介模式将这些对象之间的交互委派给中介对象交互，来避免对象之间直接交互，使其耦合松散。</p><h2 id=典型实现>典型实现</h2><p>首先，定义一个抽象中介者接口，该接口用于与各对象之间进行通信。其代码示例如下：</p><pre><code class=language-java>public abstract class Mediator {
+    // 维持所有同事对象的引用
+    protected ArrayList&lt;Colleague&gt; colleagues;
+
+    // 注册方法，用于增加同事对象
+    public void register(Colleague colleague) {
+        colleagues.add(colleague);
+    }
+
+    // 声明抽象的业务方法
+    public abstract void operation();
+}
+</code></pre><p>对于具体的中介者对象，主要是实现自己的业务方法，封装同事之间的调用。其代码示例如下：</p><pre><code class=language-java>public class ConcreteMediator extends Mediator {
+    @Override
+    public void operation() {
+        // 通过中介者调用同事类的方法
+        this.colleagues.get(0).method1();
+    }
+}
+</code></pre><p>然后，需要定义一个抽象的同事类，其维持了一个抽象中介者的引用，用于调用中介者的方法。其代码示例如下：</p><pre><code class=language-java>public abstract class Colleague {
+    // 维持一个抽象中介者的引用
+    protected Mediator mediator;
+
+    public Colleague(Mediator mediator) {
+        this.mediator = mediator;
+    }
+
+    // 声明自身方法，处理自己的行为
+    public abstract void method1();
+
+    // 定义依赖方法，与中介者通信
+    public void method2() {
+        mediator.operation();
+    }
+}
+</code></pre><p>具体的同事类也比较简单，只需要继承自抽象同事类，然后定义好自己的行为即可。</p><h2 id=总结>总结</h2><h3 id=优点>优点</h3><p>中介模式的主要优点如下：</p><ul><li>中介模式将一对多的关系简化成了一对一的关系，降低了类的复杂度，简化了对象之间的交互</li><li>将各同事对象解耦，增加新的中介者和新的同事类都比较方便，更好地符合“开闭原则”</li><li>中介者将原本分布于多个对象间的行为集中在一起，改变这些行为只需生成新的中介者子类即可，这使得各个同事类可被重用，无须对同事类进行扩展</li></ul><h3 id=缺点>缺点</h3><p>中介模式的主要缺点如下：</p><ul><li>具体的中介者类中包含了大量同事之间的交互逻辑，可能会导致具体中介者类非常复杂</li></ul><h3 id=适用场景>适用场景</h3><p>中介模式的适用场景如下：</p><ul><li>系统中对象之间存在复杂的引用关系，系统结构混乱且难以理解</li><li>一个对象由于引用了许多其他对象并且直接和这些对象通信，导致难以复用该对象</li><li>想通过一个中间类来封装多个类中的行为，而又不想生成太多子类</li></ul><h3 id=源码>源码</h3><p>在 JDK 中 <code>java.util.Timer</code> 就使用到了中介模式。如下是其源码部分：</p><pre><code class=language-java>public class Timer {
+    private final TaskQueue queue = new TaskQueue();
+
+    private void sched(TimerTask task, long time, long period) {
+        if (time &lt; 0)
+            throw new IllegalArgumentException(&quot;Illegal execution time.&quot;);
+
+        if (Math.abs(period) &gt; (Long.MAX_VALUE &gt;&gt; 1))
+            period &gt;&gt;= 1;
+
+        synchronized(queue) {
+            if (!thread.newTasksMayBeScheduled)
+                throw new IllegalStateException(&quot;Timer already cancelled.&quot;);
+
+            synchronized(task.lock) {
+                if (task.state != TimerTask.VIRGIN)
+                    throw new IllegalStateException(
+                        &quot;Task already scheduled or cancelled&quot;);
+                task.nextExecutionTime = time;
+                task.period = period;
+                task.state = TimerTask.SCHEDULED;
+            }
+
+            queue.add(task);
+            if (queue.getMin() == task)
+                queue.notify();
+        }
+    }
+}
+</code></pre></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
+<span class=item-content>翔仔</span></p><p class=copyright-item><span class=item-title>原始文档</span>
+<span class=item-content><a class=link-to-markdown href=https://fatedeity.cn/posts/programming-pattern/mediator-design-pattern.md target=_blank>☞ 跳转阅读 ☜</a></span></p><p class=copyright-item><span class=item-title>许可协议</span>
+<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><span class=item-title>相关分类</span>
+<a href=/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1.html>程序设计</a></div><div class=post-tags><span class=item-title>相关标签</span>
+<a href=/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html>设计模式</a>
+<a href=/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1.html>面向对象</a></div><nav class=post-nav><a class=next href=/posts/programming-pattern/chain-of-responsibility-design-pattern.html><span class="next-text nav-default">初识设计模式 - 职责链模式</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="fa fa-angle-double-right" aria-hidden=true></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=copyright><span class=power-by>由 <a class=hugo-link href=https://gohugo.io>Hugo</a> 强力驱动</span>
+<span class=division>|</span>
+<span class=theme-info>主题 -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a></span><div class=busuanzi-footer><span id=busuanzi_container_site_pv>本站总访问量 <span id=busuanzi_value_site_pv><img src=/img/spinner.svg alt=spinner.svg></span> 次</span>
+<span class=division>|</span>
+<span id=busuanzi_container_site_uv>本站总访客数 <span id=busuanzi_value_site_uv><img src=/img/spinner.svg alt=spinner.svg></span> 人</span></div><span class=copyright-year><span>&copy;2022</span>
+<span class=heart><i class="fa fa-heart" aria-hidden=true></i></span>
+<span>翔仔</span><span class=division> |</span>
+<a class=icp href=http://beian.miit.gov.cn/ target=_blank>粤ICP备2021076569号</a></span></div></footer><div class=back-to-top id=back-to-top><i class="fa fa-angle-double-up" aria-hidden=true></i></div></div><script src="/lib/highlight/highlight.pack.js?v=20171001"></script><script src=/lib/clipboard/clipboard.min.js></script><script async src=//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js></script><script src=https://cdn.jsdelivr.net/npm/fuse.js@6.4.6></script>
+<script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin=anonymous></script>
+<script>var languageCode="zh-cn".replace(/-/g,"_").replace(/_(.*)/,function(e,t){return e.replace(t,t.toUpperCase())});timeago().render(document.querySelectorAll(".timeago"),languageCode),timeago.cancel()</script><script src=https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin=anonymous></script> <script src=https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js integrity=sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP crossorigin=anonymous></script>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css integrity=sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF crossorigin=anonymous><script type=text/javascript src=/js/main.min.81c20bd77a307fbc9380bca98d43863096ad49e65bfa5d6ae83e3a97ce4c90f0.js></script>
+<script type=text/javascript src=/js/search.min.cd6e5547ce679d10cfde1208cd552f33cc624509065b0dc968ba19a2a2b42170.js></script><script type=text/javascript>const copyButton=document.createElement("button"),codeTrNodeList=document.querySelectorAll("figure.highlight table tbody tr");for(let e=0;e<codeTrNodeList.length;e++){const t=codeTrNodeList[e];for(const n of t.getElementsByClassName("code"))n.className+=" "+`copy-code-${e}`;t.appendChild(copyButton),copyButton.outerHTML=`<button class="copy-btn btn" data-clipboard-action="copy" data-clipboard-target="td.copy-code-${e}">`+"复制</button>"}const clipboard=new ClipboardJS(".btn");clipboard.on("success",function(e){const t=document.querySelectorAll("figure.highlight button.copy-btn");for(const e of t)e.innerText="复制";e.trigger.innerText="已复制",setTimeout(()=>{e.trigger.innerText="复制"},3e3),e.clearSelection()})</script>
+<script type=text/javascript>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]}}</script><script async src=https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin=anonymous></script>
+<script id=baidu_analytics>var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?aa99b552002ea66dbd02af2665682e36",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script id=baidu_push>(function(){if(window.location.hostname==="localhost")return;var t,n,e=document.createElement("script");e.async=!0,n=window.location.protocol.split(":")[0],n==="https"?e.src="https://zz.bdstatic.com/linksubmit/push.js":e.src="http://push.zhanzhang.baidu.com/push.js",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script></body></html>
