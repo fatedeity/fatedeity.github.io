@@ -1,0 +1,160 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>归并排序的简单理解 - 翔仔的个人博客</title><meta name=Description content="翔仔的个人博客，这是一个记录个人编程笔记的地方"><meta property="og:title" content="归并排序的简单理解"><meta property="og:description" content="归并排序与与快速排序一样，是采用分治法（Divide and Conquer）的一个非常典型的应用，在排序算法中，同时了解归并排序和快速排序，相互印证，能理解得更深。"><meta property="og:type" content="article"><meta property="og:url" content="https://fatedeity.cn/posts/data-structure-algorithm/merge-sort.html"><meta property="og:image" content="https://fatedeity.cn/favicon-32x32.png"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-06-24T08:58:56+08:00"><meta property="article:modified_time" content="2022-11-12T23:09:38+08:00"><meta property="og:site_name" content="翔仔的个人博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://fatedeity.cn/favicon-32x32.png"><meta name=twitter:title content="归并排序的简单理解"><meta name=twitter:description content="归并排序与与快速排序一样，是采用分治法（Divide and Conquer）的一个非常典型的应用，在排序算法中，同时了解归并排序和快速排序，相互印证，能理解得更深。"><meta name=application-name content="翔仔的个人博客"><meta name=apple-mobile-web-app-title content="翔仔的个人博客"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://fatedeity.cn/posts/data-structure-algorithm/merge-sort.html><link rel=prev href=https://fatedeity.cn/posts/data-structure-algorithm/quick-sort.html><link rel=next href=https://fatedeity.cn/posts/data-structure-algorithm/count-sort.html><link rel=stylesheet href=/css/style.min.68f5de0d22e326dedf4dfe8e806e9640b9919ae9e1b50df254df92f9036a799d59ba1cff1530486374bc022352a3adb1bab3b30a35aeafa690009183d4d51c2f.css integrity="sha512-aPXeDSLjJt7fTf6OgG6WQLmRmunhtQ3yVN+S+QNqeZ1Zuhz/FTBIY3S8AiNSo62xurOzCjWur6aQAJGD1NUcLw=="><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><meta name=google-site-verification content="NSfr_TOb9-BVneo8k_7eO6vn7dy9XsG3KB7jBQD8hiA"><meta name=baidu-site-verification content="code-jrerrcwoiq"><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"归并排序的简单理解","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/fatedeity.cn\/posts\/data-structure-algorithm\/merge-sort.html"},"genre":"posts","keywords":"算法, 排序","wordcount":848,"url":"https:\/\/fatedeity.cn\/posts\/data-structure-algorithm\/merge-sort.html","datePublished":"2022-06-24T08:58:56+08:00","dateModified":"2022-11-12T23:09:38+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"翔仔"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=翔仔的个人博客><img class="lazyload logo" src=/svg/loading.min.svg data-src=/logo-40x40.png data-srcset="/logo-40x40.png, /logo-40x40.png 1.5x, /logo-40x40.png 2x" data-sizes=auto alt=/logo-40x40.png title=/logo-40x40.png>翔仔的个人博客</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/>首页 </a><a class=menu-item href=/categories.html>分类 </a><a class=menu-item href=/tags.html>标签 </a><a class=menu-item href=/posts.html>归档 </a><a class=menu-item href=/about.html>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=翔仔的个人博客><img class="lazyload logo" src=/svg/loading.min.svg data-src=/logo-40x40.png data-srcset="/logo-40x40.png, /logo-40x40.png 1.5x, /logo-40x40.png 2x" data-sizes=auto alt=/logo-40x40.png title=/logo-40x40.png>翔仔的个人博客</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/ title>首页</a><a class=menu-item href=/categories.html title>分类</a><a class=menu-item href=/tags.html title>标签</a><a class=menu-item href=/posts.html title>归档</a><a class=menu-item href=/about.html title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class="toc-content always-active" id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">归并排序的简单理解</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>翔仔</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html><i class="far fa-folder fa-fw" aria-hidden=true></i>数据结构与算法</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2022-06-24>2022-06-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 848 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 2 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#详细描述>详细描述</a></li><li><a href=#算法图解>算法图解</a></li><li><a href=#问题解疑>问题解疑</a><ul><li><a href=#归并排序和快速排序比较怎么样>归并排序和快速排序比较怎么样？</a></li><li><a href=#归并排序的应用在什么场景>归并排序的应用在什么场景？</a></li><li><a href=#归并排序的时间复杂度是多少>归并排序的时间复杂度是多少？</a></li></ul></li><li><a href=#代码实现>代码实现</a><ul><li><a href=#排序接口>排序接口</a></li><li><a href=#排序抽象类>排序抽象类</a></li><li><a href=#归并排序类>归并排序类</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>归并排序与与快速排序一样，是采用分治法（Divide and Conquer）的一个非常典型的应用，在排序算法中，同时了解归并排序和快速排序，相互印证，能理解得更深。</p><h2 id=详细描述>详细描述</h2><p>归并排序的基本思想是，将已有序的子序列合并，可以得到有序的完整序列；即先使每个子序列有序，再使子序列段间有序。若将两个有序表合并成一个有序表，称为 <strong>二路归并</strong>。</p><p>归并排序详细的执行步骤如下：</p><ol><li>申请空间，使其大小为两个已经排序序列之和，该空间用来存放合并后的序列；</li><li>设定两个指针，最初位置分别为两个已经排序序列的起始位置；</li><li>比较两个指针所指向的元素，选择相对小的元素放入到合并空间，并移动指针到下一位置；</li><li>重复步骤 3 直到某一指针超出序列尾。</li></ol><h2 id=算法图解>算法图解</h2><p><img class=lazyload src=/svg/loading.min.svg data-src=assets/%e5%bd%92%e5%b9%b6%e6%8e%92%e5%ba%8f.gif data-srcset="assets/%e5%bd%92%e5%b9%b6%e6%8e%92%e5%ba%8f.gif, assets/%e5%bd%92%e5%b9%b6%e6%8e%92%e5%ba%8f.gif 1.5x, assets/%e5%bd%92%e5%b9%b6%e6%8e%92%e5%ba%8f.gif 2x" data-sizes=auto alt=assets/归并排序.gif title=归并排序></p><h2 id=问题解疑>问题解疑</h2><h3 id=归并排序和快速排序比较怎么样>归并排序和快速排序比较怎么样？</h3><p>归并排序的比较次数小于快速排序的比较次数，移动次数一般多于快速排序的移动次数。</p><h3 id=归并排序的应用在什么场景>归并排序的应用在什么场景？</h3><p>归并排序速度仅次于快速排序，为稳定排序算法，一般用于对总体无序，但是各子项相对有序的序列。</p><h3 id=归并排序的时间复杂度是多少>归并排序的时间复杂度是多少？</h3><p>每次合并操作的平均时间复杂度为 $O(n)$，而完全二叉树的深度为 $\log_2n$，总的平均时间复杂度为 $O(n \log n)$。</p><p>并且，归并排序的最好、最坏、平均时间复杂度均为 $O(n \log n)$。</p><h2 id=代码实现>代码实现</h2><h3 id=排序接口>排序接口</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kn>package</span> <span class=nn>cn.fatedeity.algorithm.sort</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * 排序接口
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Sort</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span><span class=o>[]</span> <span class=nf>sort</span><span class=o>(</span><span class=kt>int</span><span class=o>[]</span> <span class=n>numbers</span><span class=o>);</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=排序抽象类>排序抽象类</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kn>package</span> <span class=nn>cn.fatedeity.algorithm.sort</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * 排序抽象类
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>abstract</span> <span class=kd>class</span> <span class=nc>AbstractSort</span> <span class=kd>implements</span> <span class=n>Sort</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>protected</span> <span class=kt>void</span> <span class=nf>swap</span><span class=o>(</span><span class=kt>int</span><span class=o>[]</span> <span class=n>numbers</span><span class=o>,</span> <span class=kt>int</span> <span class=n>src</span><span class=o>,</span> <span class=kt>int</span> <span class=n>target</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>temp</span> <span class=o>=</span> <span class=n>numbers</span><span class=o>[</span><span class=n>src</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>        <span class=n>numbers</span><span class=o>[</span><span class=n>src</span><span class=o>]</span> <span class=o>=</span> <span class=n>numbers</span><span class=o>[</span><span class=n>target</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>        <span class=n>numbers</span><span class=o>[</span><span class=n>target</span><span class=o>]</span> <span class=o>=</span> <span class=n>temp</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=归并排序类>归并排序类</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kn>package</span> <span class=nn>cn.fatedeity.algorithm.sort</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * 归并排序类
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>class</span> <span class=nc>MergeSort</span> <span class=kd>extends</span> <span class=n>AbstractSort</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>merge</span><span class=o>(</span><span class=kt>int</span><span class=o>[]</span> <span class=n>numbers</span><span class=o>,</span> <span class=kt>int</span> <span class=n>low</span><span class=o>,</span> <span class=kt>int</span> <span class=n>mid</span><span class=o>,</span> <span class=kt>int</span> <span class=n>high</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>low</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>mid</span> <span class=o>+</span> <span class=n>1</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span><span class=o>[]</span> <span class=n>newNumbers</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>high</span> <span class=o>-</span> <span class=n>low</span> <span class=o>+</span> <span class=n>1</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=n>0</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>while</span> <span class=o>(</span><span class=n>i</span> <span class=o>&lt;=</span> <span class=n>mid</span> <span class=o>&amp;&amp;</span> <span class=n>j</span> <span class=o>&lt;=</span> <span class=n>high</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=o>(</span><span class=n>numbers</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>&lt;</span> <span class=n>numbers</span><span class=o>[</span><span class=n>j</span><span class=o>])</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>newNumbers</span><span class=o>[</span><span class=n>k</span><span class=o>++]</span> <span class=o>=</span> <span class=n>numbers</span><span class=o>[</span><span class=n>i</span><span class=o>++];</span>
+</span></span><span class=line><span class=cl>            <span class=o>}</span> <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>numbers</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>&gt;</span> <span class=n>numbers</span><span class=o>[</span><span class=n>j</span><span class=o>])</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>newNumbers</span><span class=o>[</span><span class=n>k</span><span class=o>++]</span> <span class=o>=</span> <span class=n>numbers</span><span class=o>[</span><span class=n>j</span><span class=o>++];</span>
+</span></span><span class=line><span class=cl>            <span class=o>}</span> <span class=k>else</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>newNumbers</span><span class=o>[</span><span class=n>k</span><span class=o>++]</span> <span class=o>=</span> <span class=n>numbers</span><span class=o>[</span><span class=n>i</span><span class=o>++];</span>
+</span></span><span class=line><span class=cl>                <span class=n>newNumbers</span><span class=o>[</span><span class=n>k</span><span class=o>++]</span> <span class=o>=</span> <span class=n>numbers</span><span class=o>[</span><span class=n>j</span><span class=o>++];</span>
+</span></span><span class=line><span class=cl>            <span class=o>}</span>
+</span></span><span class=line><span class=cl>        <span class=o>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>while</span> <span class=o>(</span><span class=n>i</span> <span class=o>&lt;=</span> <span class=n>mid</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>newNumbers</span><span class=o>[</span><span class=n>k</span><span class=o>++]</span> <span class=o>=</span> <span class=n>numbers</span><span class=o>[</span><span class=n>i</span><span class=o>++];</span>
+</span></span><span class=line><span class=cl>        <span class=o>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>while</span> <span class=o>(</span><span class=n>j</span> <span class=o>&lt;=</span> <span class=n>high</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>newNumbers</span><span class=o>[</span><span class=n>k</span><span class=o>++]</span> <span class=o>=</span> <span class=n>numbers</span><span class=o>[</span><span class=n>j</span><span class=o>++];</span>
+</span></span><span class=line><span class=cl>        <span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=o>(</span><span class=n>high</span> <span class=o>+</span> <span class=n>1</span> <span class=o>-</span> <span class=n>low</span> <span class=o>&gt;=</span> <span class=n>0</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>System</span><span class=o>.</span><span class=na>arraycopy</span><span class=o>(</span><span class=n>newNumbers</span><span class=o>,</span> <span class=n>0</span><span class=o>,</span> <span class=n>numbers</span><span class=o>,</span> <span class=n>low</span><span class=o>,</span> <span class=n>high</span> <span class=o>+</span> <span class=n>1</span> <span class=o>-</span> <span class=n>low</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>        <span class=o>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=nf>sort</span><span class=o>(</span><span class=kt>int</span><span class=o>[]</span> <span class=n>numbers</span><span class=o>,</span> <span class=kt>int</span> <span class=n>low</span><span class=o>,</span> <span class=kt>int</span> <span class=n>high</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=o>(</span><span class=n>low</span> <span class=o>&lt;</span> <span class=n>high</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>mid</span> <span class=o>=</span> <span class=o>(</span><span class=n>low</span> <span class=o>+</span> <span class=n>high</span><span class=o>)</span> <span class=o>&gt;&gt;</span> <span class=n>1</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>this</span><span class=o>.</span><span class=na>sort</span><span class=o>(</span><span class=n>numbers</span><span class=o>,</span> <span class=n>low</span><span class=o>,</span> <span class=n>mid</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>this</span><span class=o>.</span><span class=na>sort</span><span class=o>(</span><span class=n>numbers</span><span class=o>,</span> <span class=n>mid</span> <span class=o>+</span> <span class=n>1</span><span class=o>,</span> <span class=n>high</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>this</span><span class=o>.</span><span class=na>merge</span><span class=o>(</span><span class=n>numbers</span><span class=o>,</span> <span class=n>low</span><span class=o>,</span> <span class=n>mid</span><span class=o>,</span> <span class=n>high</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>        <span class=o>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>numbers</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@Override</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span><span class=o>[]</span> <span class=nf>sort</span><span class=o>(</span><span class=kt>int</span><span class=o>[]</span> <span class=n>numbers</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=o>(</span><span class=n>numbers</span><span class=o>.</span><span class=na>length</span> <span class=o>&lt;=</span> <span class=n>1</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>numbers</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>        <span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=k>this</span><span class=o>.</span><span class=na>sort</span><span class=o>(</span><span class=n>numbers</span><span class=o>,</span> <span class=n>0</span><span class=o>,</span> <span class=n>numbers</span><span class=o>.</span><span class=na>length</span> <span class=o>-</span> <span class=n>1</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2022-11-12</span></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-markdown href=/posts/data-structure-algorithm/merge-sort.md target=_blank>阅读原始文档</a></span></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/%E7%AE%97%E6%B3%95.html>算法</a>,&nbsp;<a href=/tags/%E6%8E%92%E5%BA%8F.html>排序</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/data-structure-algorithm/quick-sort.html class=prev rel=prev title=快速排序的简单理解><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>快速排序的简单理解</a>
+<a href=/posts/data-structure-algorithm/count-sort.html class=next rel=next title=计数排序的简单理解>计数排序的简单理解<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=giscus class=comment></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app>Giscus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.105.0">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=/ target=_blank>翔仔</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br><span class=icp>粤ICP备2021076569号</span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.7b0408f98c705b0bc4a799d0202fa56eb3205ac5921eabd9361c0b6788f342f09cb993017c67db1e9a9cc94773fbd5719a10c007bda24312630eb81919b8b8a1.js integrity="sha512-ewQI+YxwWwvEp5nQIC+lbrMgWsWSHqvZNhwLZ4jzQvCcuZMBfGfbHpqcyUdz+9VxmhDAB72iQxJjDrgZGbi4oQ=="></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.918bdd059e2c518e24c32fb5fd89144a49778f21f2166db93bf1e2ed311b3589660feb5777210257aee209f6d8bdde8c296883e34ff8bf4d5338f4be53132976.js integrity="sha512-kYvdBZ4sUY4kwy+1/YkUSkl3jyHyFm25O/Hi7TEbNYlmD+tXdyECV67iCfbYvd6MKWiD40/4v01TOPS+UxMpdg=="></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{giscus:{category:"Announcements",categoryId:"DIC_kwDOIa-wYs4CSg4a",darkTheme:"dark",emitMetadata:"0",inputPosition:"top",lang:"zh-CN",lazyLoading:!0,lightTheme:"light",mapping:"pathname",reactionsEnabled:"1",repo:"fatedeity/blog-comment",repoId:"R_kgDOIa-wYg"}},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.2970a33d719df7cd89cebf586152b32a8ed30012227fa81b44282950146e0f595d1c733779e4d423dda1004bdcf707ee64d0fadc3d21229cd66b960788f84bdb.js integrity="sha512-KXCjPXGd982Jzr9YYVKzKo7TABIif6gbRCgpUBRuD1ldHHM3eeTUI92hAEvc9wfuZND63D0hIpzWa5YHiPhL2w=="></script></body></html>

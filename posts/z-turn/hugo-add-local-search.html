@@ -1,0 +1,598 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>给 hugo 博客添加搜索功能 - 翔仔的个人博客</title><meta name=Description content="翔仔的个人博客，这是一个记录个人编程笔记的地方"><meta property="og:title" content="给 hugo 博客添加搜索功能"><meta property="og:description" content="随着博客的文章越来越多，原本没有搜索功能的博客变得难以使用起来，博客添加一个搜索功能势在必行啊。"><meta property="og:type" content="article"><meta property="og:url" content="https://fatedeity.cn/posts/z-turn/hugo-add-local-search.html"><meta property="og:image" content="https://fatedeity.cn/favicon-32x32.png"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-10-24T08:22:42+08:00"><meta property="article:modified_time" content="2022-11-12T23:09:38+08:00"><meta property="og:site_name" content="翔仔的个人博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://fatedeity.cn/favicon-32x32.png"><meta name=twitter:title content="给 hugo 博客添加搜索功能"><meta name=twitter:description content="随着博客的文章越来越多，原本没有搜索功能的博客变得难以使用起来，博客添加一个搜索功能势在必行啊。"><meta name=application-name content="翔仔的个人博客"><meta name=apple-mobile-web-app-title content="翔仔的个人博客"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://fatedeity.cn/posts/z-turn/hugo-add-local-search.html><link rel=prev href=https://fatedeity.cn/posts/programming-pattern/command-design-pattern.html><link rel=next href=https://fatedeity.cn/posts/programming-pattern/state-design-pattern.html><link rel=stylesheet href=/css/style.min.68f5de0d22e326dedf4dfe8e806e9640b9919ae9e1b50df254df92f9036a799d59ba1cff1530486374bc022352a3adb1bab3b30a35aeafa690009183d4d51c2f.css integrity="sha512-aPXeDSLjJt7fTf6OgG6WQLmRmunhtQ3yVN+S+QNqeZ1Zuhz/FTBIY3S8AiNSo62xurOzCjWur6aQAJGD1NUcLw=="><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><meta name=google-site-verification content="NSfr_TOb9-BVneo8k_7eO6vn7dy9XsG3KB7jBQD8hiA"><meta name=baidu-site-verification content="code-jrerrcwoiq"><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"给 hugo 博客添加搜索功能","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/fatedeity.cn\/posts\/z-turn\/hugo-add-local-search.html"},"genre":"posts","keywords":"博客","wordcount":2092,"url":"https:\/\/fatedeity.cn\/posts\/z-turn\/hugo-add-local-search.html","datePublished":"2022-10-24T08:22:42+08:00","dateModified":"2022-11-12T23:09:38+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"翔仔"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=翔仔的个人博客><img class="lazyload logo" src=/svg/loading.min.svg data-src=/logo-40x40.png data-srcset="/logo-40x40.png, /logo-40x40.png 1.5x, /logo-40x40.png 2x" data-sizes=auto alt=/logo-40x40.png title=/logo-40x40.png>翔仔的个人博客</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/>首页 </a><a class=menu-item href=/categories.html>分类 </a><a class=menu-item href=/tags.html>标签 </a><a class=menu-item href=/posts.html>归档 </a><a class=menu-item href=/about.html>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=翔仔的个人博客><img class="lazyload logo" src=/svg/loading.min.svg data-src=/logo-40x40.png data-srcset="/logo-40x40.png, /logo-40x40.png 1.5x, /logo-40x40.png 2x" data-sizes=auto alt=/logo-40x40.png title=/logo-40x40.png>翔仔的个人博客</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/ title>首页</a><a class=menu-item href=/categories.html title>分类</a><a class=menu-item href=/tags.html title>标签</a><a class=menu-item href=/posts.html title>归档</a><a class=menu-item href=/about.html title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class="toc-content always-active" id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">给 hugo 博客添加搜索功能</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>翔仔</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/%E6%8A%98%E8%85%BE%E6%97%A5%E5%BF%97.html><i class="far fa-folder fa-fw" aria-hidden=true></i>折腾日志</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2022-10-24>2022-10-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 2092 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 5 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#起因>起因</a></li><li><a href=#实际案例>实际案例</a><ul><li><a href=#步骤>步骤</a></li><li><a href=#配置>配置</a></li><li><a href=#添加-indexjson-文件>添加 index.json 文件</a></li><li><a href=#添加依赖>添加依赖</a></li><li><a href=#添加-html-代码>添加 HTML 代码</a></li><li><a href=#添加-css-样式>添加 CSS 样式</a></li><li><a href=#样例展示>样例展示</a></li></ul></li><li><a href=#总结>总结</a></li></ul></nav></div></div><div class=content id=content><p>随着博客的文章越来越多，原本没有搜索功能的博客变得难以使用起来，博客添加一个搜索功能势在必行啊。</p><h2 id=起因>起因</h2><p>我的博客使用了 hugo 作为静态生成工具，自带的主题里也没有附带搜索功能。看来，还是得自己给博客添加一个搜索功能。</p><p>经过多方查找，从 <a href=https://gist.github.com/cmod/5410eae147e4318164258742dd053993 target=_blank rel="noopener noreffer">Hugo Fast Search · GitHub</a> 找到一片详细、可用的教程（虽然后面魔改了一些）。</p><h2 id=实际案例>实际案例</h2><h3 id=步骤>步骤</h3><ol><li>在 config.toml 文件做好相关配置；</li><li>添加导出 JSON 格式文件的脚本，即在 <code>layouts/_default</code> 目录下添加 index.json 文件；</li><li>增加依赖的 JS 脚本，包含自己的 search.js 和 fuse.js 文件；</li><li>添加相关 HTML 代码；</li><li>添加相关 CSS 样式。</li></ol><h3 id=配置>配置</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-toml data-lang=toml><span class=line><span class=cl><span class=p>[</span><span class=nx>params</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>  <span class=c># 是否开启本地搜索</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fastSearch</span> <span class=p>=</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=nx>outputs</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>  <span class=c># 增加 JSON 配置</span>
+</span></span><span class=line><span class=cl>  <span class=nx>home</span> <span class=p>=</span> <span class=p>[</span><span class=s2>&#34;HTML&#34;</span><span class=p>,</span> <span class=s2>&#34;RSS&#34;</span><span class=p>,</span> <span class=s2>&#34;JSON&#34;</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=添加-indexjson-文件>添加 index.json 文件</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span><span class=err>{-</span> <span class=err>$.Scratch.Add</span> <span class=nt>&#34;index&#34;</span> <span class=err>slice</span> <span class=err>-</span><span class=p>}</span><span class=err>}</span>
+</span></span><span class=line><span class=cl><span class=p>{</span><span class=err>{-</span> <span class=err>range</span> <span class=err>.Site.RegularPages</span> <span class=err>-</span><span class=p>}</span><span class=err>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span><span class=err>{-</span> <span class=err>$.Scratch.Add</span> <span class=nt>&#34;index&#34;</span> <span class=err>(dict</span> <span class=s2>&#34;title&#34;</span> <span class=err>.Title</span> <span class=s2>&#34;permalink&#34;</span> <span class=err>.Permalink</span> <span class=s2>&#34;content&#34;</span> <span class=err>.Plain)</span> <span class=err>-</span><span class=p>}</span><span class=err>}</span>
+</span></span><span class=line><span class=cl><span class=p>{</span><span class=err>{-</span> <span class=err>end</span> <span class=err>-</span><span class=p>}</span><span class=err>}</span>
+</span></span><span class=line><span class=cl><span class=p>{</span><span class=err>{-</span> <span class=err>$.Scratch.Get</span> <span class=nt>&#34;index&#34;</span> <span class=err>|</span> <span class=err>jsonify</span> <span class=err>-</span><span class=p>}</span><span class=err>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=添加依赖>添加依赖</h3><p>首先，可以先添加 fuse.js 依赖，它是一个功能强大的轻量级模糊搜索库，可以到 <a href=https://fusejs.io/ target=_blank rel="noopener noreffer">官网</a> 访问更多信息：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-html data-lang=html><span class=line><span class=cl>{{- if .Site.Params.fastSearch -}}
+</span></span><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>script</span> <span class=na>src</span><span class=o>=</span><span class=s>&#34;https://cdn.jsdelivr.net/npm/fuse.js@6.4.6&#34;</span><span class=p>&gt;&lt;/</span><span class=nt>script</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>{{- end -}}
+</span></span></code></pre></td></tr></table></div></div><p>然后，就是添加自定义的 search.js 文件以实现搜索功能，文件放置在 <code>assets/js</code> 目录下。</p><p>这里的代码和 Gist 上的有些许不同，经过了自己的魔改。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=kd>var</span> <span class=nx>fuse</span><span class=p>;</span> <span class=c1>// holds our search engine
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>var</span> <span class=nx>searchVisible</span> <span class=o>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>firstRun</span> <span class=o>=</span> <span class=kc>true</span><span class=p>;</span> <span class=c1>// allow us to delay loading json data unless search activated
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>var</span> <span class=nx>list</span> <span class=o>=</span> <span class=nb>document</span><span class=p>.</span><span class=nx>getElementById</span><span class=p>(</span><span class=s1>&#39;searchResults&#39;</span><span class=p>);</span> <span class=c1>// targets the &lt;ul&gt;
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>var</span> <span class=nx>first</span> <span class=o>=</span> <span class=nx>list</span><span class=p>.</span><span class=nx>firstChild</span><span class=p>;</span> <span class=c1>// first child of search list
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>var</span> <span class=nx>last</span> <span class=o>=</span> <span class=nx>list</span><span class=p>.</span><span class=nx>lastChild</span><span class=p>;</span> <span class=c1>// last child of search list
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>var</span> <span class=nx>maininput</span> <span class=o>=</span> <span class=nb>document</span><span class=p>.</span><span class=nx>getElementById</span><span class=p>(</span><span class=s1>&#39;searchInput&#39;</span><span class=p>);</span> <span class=c1>// input box for search
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>var</span> <span class=nx>resultsAvailable</span> <span class=o>=</span> <span class=kc>false</span><span class=p>;</span> <span class=c1>// Did we get any search results?
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// ==========================================
+</span></span></span><span class=line><span class=cl><span class=c1>// The main keyboard event listener running the show
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nb>document</span><span class=p>.</span><span class=nx>addEventListener</span><span class=p>(</span><span class=s2>&#34;click&#34;</span><span class=p>,</span> <span class=nx>event</span> <span class=p>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>cDom</span> <span class=o>=</span> <span class=nb>document</span><span class=p>.</span><span class=nx>getElementById</span><span class=p>(</span><span class=s2>&#34;fastSearch&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>sDom</span> <span class=o>=</span> <span class=nb>document</span><span class=p>.</span><span class=nx>getElementById</span><span class=p>(</span><span class=s1>&#39;search-click&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>tDom</span> <span class=o>=</span> <span class=nx>event</span><span class=p>.</span><span class=nx>target</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span><span class=nx>sDom</span> <span class=o>==</span> <span class=nx>tDom</span> <span class=o>||</span> <span class=nx>sDom</span><span class=p>.</span><span class=nx>contains</span><span class=p>(</span><span class=nx>tDom</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>showSearchInput</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=nx>cDom</span> <span class=o>==</span> <span class=nx>tDom</span> <span class=o>||</span> <span class=nx>cDom</span><span class=p>.</span><span class=nx>contains</span><span class=p>(</span><span class=nx>tDom</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>}</span> <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=nx>searchVisible</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>cDom</span><span class=p>.</span><span class=nx>style</span><span class=p>.</span><span class=nx>display</span> <span class=o>=</span> <span class=s2>&#34;none&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>searchVisible</span> <span class=o>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>document</span><span class=p>.</span><span class=nx>addEventListener</span><span class=p>(</span><span class=s1>&#39;keydown&#39;</span><span class=p>,</span> <span class=kd>function</span><span class=p>(</span><span class=nx>event</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// CMD-/ to show / hide Search
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>if</span> <span class=p>(</span><span class=nx>event</span><span class=p>.</span><span class=nx>metaKey</span> <span class=o>&amp;&amp;</span> <span class=nx>event</span><span class=p>.</span><span class=nx>which</span> <span class=o>===</span> <span class=mi>191</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nx>showSearchInput</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Allow ESC (27) to close search box
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>if</span> <span class=p>(</span><span class=nx>event</span><span class=p>.</span><span class=nx>keyCode</span> <span class=o>==</span> <span class=mi>27</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=nx>searchVisible</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nb>document</span><span class=p>.</span><span class=nx>getElementById</span><span class=p>(</span><span class=s2>&#34;fastSearch&#34;</span><span class=p>).</span><span class=nx>style</span><span class=p>.</span><span class=nx>display</span> <span class=o>=</span> <span class=s2>&#34;none&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=nb>document</span><span class=p>.</span><span class=nx>activeElement</span><span class=p>.</span><span class=nx>blur</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>      <span class=nx>searchVisible</span> <span class=o>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// DOWN (40) arrow
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>if</span> <span class=p>(</span><span class=nx>event</span><span class=p>.</span><span class=nx>keyCode</span> <span class=o>==</span> <span class=mi>40</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=nx>searchVisible</span> <span class=o>&amp;&amp;</span> <span class=nx>resultsAvailable</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nx>event</span><span class=p>.</span><span class=nx>preventDefault</span><span class=p>();</span> <span class=c1>// stop window from scrolling
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=k>if</span> <span class=p>(</span> <span class=nb>document</span><span class=p>.</span><span class=nx>activeElement</span> <span class=o>==</span> <span class=nx>maininput</span><span class=p>)</span> <span class=p>{</span> <span class=nx>first</span><span class=p>.</span><span class=nx>focus</span><span class=p>();</span> <span class=p>}</span> <span class=c1>// if the currently focused element is the main input --&gt; focus the first &lt;li&gt;
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=k>else</span> <span class=k>if</span> <span class=p>(</span> <span class=nb>document</span><span class=p>.</span><span class=nx>activeElement</span> <span class=o>==</span> <span class=nx>last</span> <span class=p>)</span> <span class=p>{</span> <span class=nx>last</span><span class=p>.</span><span class=nx>focus</span><span class=p>();</span> <span class=p>}</span> <span class=c1>// if we&#39;re at the bottom, stay there
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=k>else</span> <span class=p>{</span> <span class=nb>document</span><span class=p>.</span><span class=nx>activeElement</span><span class=p>.</span><span class=nx>parentElement</span><span class=p>.</span><span class=nx>nextSibling</span><span class=p>.</span><span class=nx>firstElementChild</span><span class=p>.</span><span class=nx>focus</span><span class=p>();</span> <span class=p>}</span> <span class=c1>// otherwise select the next search result
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// UP (38) arrow
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>if</span> <span class=p>(</span><span class=nx>event</span><span class=p>.</span><span class=nx>keyCode</span> <span class=o>==</span> <span class=mi>38</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=nx>searchVisible</span> <span class=o>&amp;&amp;</span> <span class=nx>resultsAvailable</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nx>event</span><span class=p>.</span><span class=nx>preventDefault</span><span class=p>();</span> <span class=c1>// stop window from scrolling
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=k>if</span> <span class=p>(</span> <span class=nb>document</span><span class=p>.</span><span class=nx>activeElement</span> <span class=o>==</span> <span class=nx>maininput</span><span class=p>)</span> <span class=p>{</span> <span class=nx>maininput</span><span class=p>.</span><span class=nx>focus</span><span class=p>();</span> <span class=p>}</span> <span class=c1>// If we&#39;re in the input box, do nothing
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=k>else</span> <span class=k>if</span> <span class=p>(</span> <span class=nb>document</span><span class=p>.</span><span class=nx>activeElement</span> <span class=o>==</span> <span class=nx>first</span><span class=p>)</span> <span class=p>{</span> <span class=nx>maininput</span><span class=p>.</span><span class=nx>focus</span><span class=p>();</span> <span class=p>}</span> <span class=c1>// If we&#39;re at the first item, go to input box
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=k>else</span> <span class=p>{</span> <span class=nb>document</span><span class=p>.</span><span class=nx>activeElement</span><span class=p>.</span><span class=nx>parentElement</span><span class=p>.</span><span class=nx>previousSibling</span><span class=p>.</span><span class=nx>firstElementChild</span><span class=p>.</span><span class=nx>focus</span><span class=p>();</span> <span class=p>}</span> <span class=c1>// Otherwise, select the search result above the current active one
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// ==========================================
+</span></span></span><span class=line><span class=cl><span class=c1>// execute search as each character is typed
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nb>document</span><span class=p>.</span><span class=nx>getElementById</span><span class=p>(</span><span class=s2>&#34;searchInput&#34;</span><span class=p>).</span><span class=nx>onkeyup</span> <span class=o>=</span> <span class=kd>function</span><span class=p>(</span><span class=nx>e</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>executeSearch</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>function</span> <span class=nx>showSearchInput</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Load json search index if first time invoking search
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>// Means we don&#39;t load json unless searches are going to happen; keep user payload small unless needed
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>if</span><span class=p>(</span><span class=nx>firstRun</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>loadSearch</span><span class=p>();</span> <span class=c1>// loads our json data and builds fuse.js search index
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>firstRun</span> <span class=o>=</span> <span class=kc>false</span><span class=p>;</span> <span class=c1>// let&#39;s never do this again
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Toggle visibility of search box
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=nx>searchVisible</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>document</span><span class=p>.</span><span class=nx>getElementById</span><span class=p>(</span><span class=s2>&#34;fastSearch&#34;</span><span class=p>).</span><span class=nx>style</span><span class=p>.</span><span class=nx>display</span> <span class=o>=</span> <span class=s2>&#34;block&#34;</span><span class=p>;</span> <span class=c1>// show search box
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nb>document</span><span class=p>.</span><span class=nx>getElementById</span><span class=p>(</span><span class=s2>&#34;searchInput&#34;</span><span class=p>).</span><span class=nx>focus</span><span class=p>();</span> <span class=c1>// put focus in input box so you can just start typing
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>searchVisible</span> <span class=o>=</span> <span class=kc>true</span><span class=p>;</span> <span class=c1>// search visible
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>document</span><span class=p>.</span><span class=nx>getElementById</span><span class=p>(</span><span class=s2>&#34;fastSearch&#34;</span><span class=p>).</span><span class=nx>style</span><span class=p>.</span><span class=nx>display</span> <span class=o>=</span> <span class=s2>&#34;none&#34;</span><span class=p>;</span> <span class=c1>// hide search box
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nb>document</span><span class=p>.</span><span class=nx>activeElement</span><span class=p>.</span><span class=nx>blur</span><span class=p>();</span> <span class=c1>// remove focus from search box
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>searchVisible</span> <span class=o>=</span> <span class=kc>false</span><span class=p>;</span> <span class=c1>// search not visible
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// ==========================================
+</span></span></span><span class=line><span class=cl><span class=c1>// fetch some json without jquery
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>function</span> <span class=nx>fetchJSONFile</span><span class=p>(</span><span class=nx>path</span><span class=p>,</span> <span class=nx>callback</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>httpRequest</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>XMLHttpRequest</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=nx>httpRequest</span><span class=p>.</span><span class=nx>onreadystatechange</span> <span class=o>=</span> <span class=kd>function</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=nx>httpRequest</span><span class=p>.</span><span class=nx>readyState</span> <span class=o>===</span> <span class=mi>4</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=p>(</span><span class=nx>httpRequest</span><span class=p>.</span><span class=nx>status</span> <span class=o>===</span> <span class=mi>200</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kd>var</span> <span class=nx>data</span> <span class=o>=</span> <span class=nx>JSON</span><span class=p>.</span><span class=nx>parse</span><span class=p>(</span><span class=nx>httpRequest</span><span class=p>.</span><span class=nx>responseText</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>          <span class=k>if</span> <span class=p>(</span><span class=nx>callback</span><span class=p>)</span> <span class=nx>callback</span><span class=p>(</span><span class=nx>data</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>};</span>
+</span></span><span class=line><span class=cl>  <span class=nx>httpRequest</span><span class=p>.</span><span class=nx>open</span><span class=p>(</span><span class=s1>&#39;GET&#39;</span><span class=p>,</span> <span class=nx>path</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nx>httpRequest</span><span class=p>.</span><span class=nx>send</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// ==========================================
+</span></span></span><span class=line><span class=cl><span class=c1>// load our search index, only executed once
+</span></span></span><span class=line><span class=cl><span class=c1>// on first call of search box (CMD-/)
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>function</span> <span class=nx>loadSearch</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fetchJSONFile</span><span class=p>(</span><span class=s1>&#39;/index.json&#39;</span><span class=p>,</span> <span class=kd>function</span><span class=p>(</span><span class=nx>data</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>options</span> <span class=o>=</span> <span class=p>{</span> <span class=c1>// fuse.js options; check fuse.js website for details
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=nx>includeMatches</span><span class=o>:</span> <span class=kc>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nx>shouldSort</span><span class=o>:</span> <span class=kc>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nx>ignoreLocation</span><span class=o>:</span> <span class=kc>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nx>keys</span><span class=o>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;title&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>          <span class=nx>weight</span><span class=o>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;content&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>          <span class=nx>weight</span><span class=o>:</span> <span class=mf>0.6</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span>
+</span></span><span class=line><span class=cl>      <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=p>};</span>
+</span></span><span class=line><span class=cl>    <span class=nx>fuse</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Fuse</span><span class=p>(</span><span class=nx>data</span><span class=p>,</span> <span class=nx>options</span><span class=p>);</span> <span class=c1>// build the index from the json file
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// ==========================================
+</span></span></span><span class=line><span class=cl><span class=c1>// using the index we loaded on CMD-/, run
+</span></span></span><span class=line><span class=cl><span class=c1>// a search query (for &#34;term&#34;) every time a letter is typed
+</span></span></span><span class=line><span class=cl><span class=c1>// in the search box
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>function</span> <span class=nx>executeSearch</span><span class=p>(</span><span class=nx>term</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span><span class=nx>term</span><span class=p>.</span><span class=nx>length</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>document</span><span class=p>.</span><span class=nx>getElementById</span><span class=p>(</span><span class=s2>&#34;searchResults&#34;</span><span class=p>).</span><span class=nx>setAttribute</span><span class=p>(</span><span class=s2>&#34;style&#34;</span><span class=p>,</span> <span class=s2>&#34;&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>let</span> <span class=nx>results</span> <span class=o>=</span> <span class=nx>fuse</span><span class=p>.</span><span class=nx>search</span><span class=p>(</span><span class=nx>term</span><span class=p>);</span> <span class=c1>// the actual query being run using fuse.js
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kd>let</span> <span class=nx>searchItems</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span><span class=p>;</span> <span class=c1>// our results bucket
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span><span class=nx>results</span><span class=p>.</span><span class=nx>length</span> <span class=o>===</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span> <span class=c1>// no results based on what was typed into the input box
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>resultsAvailable</span> <span class=o>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>searchItems</span> <span class=o>=</span> <span class=s1>&#39;&lt;li class=&#34;noSearchResult&#34;&gt;无结果&lt;/li&gt;&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>else</span> <span class=p>{</span> <span class=c1>// build our html
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>permalinkList</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=nx>searchItemCount</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kd>let</span> <span class=nx>item</span> <span class=k>in</span> <span class=nx>results</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=p>(</span><span class=nx>permalinkList</span><span class=p>.</span><span class=nx>includes</span><span class=p>(</span><span class=nx>results</span><span class=p>[</span><span class=nx>item</span><span class=p>].</span><span class=nx>item</span><span class=p>.</span><span class=nx>permalink</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>      <span class=c1>// 去重
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=nx>permalinkList</span><span class=p>.</span><span class=nx>push</span><span class=p>(</span><span class=nx>results</span><span class=p>[</span><span class=nx>item</span><span class=p>].</span><span class=nx>item</span><span class=p>.</span><span class=nx>permalink</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nx>searchItemCount</span> <span class=o>+=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=nx>title</span> <span class=o>=</span> <span class=nx>results</span><span class=p>[</span><span class=nx>item</span><span class=p>].</span><span class=nx>item</span><span class=p>.</span><span class=nx>title</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=nx>content</span> <span class=o>=</span> <span class=nx>results</span><span class=p>[</span><span class=nx>item</span><span class=p>].</span><span class=nx>item</span><span class=p>.</span><span class=nx>content</span><span class=p>.</span><span class=nx>slice</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>50</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>for</span> <span class=p>(</span><span class=kr>const</span> <span class=nx>match</span> <span class=k>of</span> <span class=nx>results</span><span class=p>[</span><span class=nx>item</span><span class=p>].</span><span class=nx>matches</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nx>match</span><span class=p>.</span><span class=nx>key</span> <span class=o>==</span> <span class=s1>&#39;title&#39;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=nx>startIndex</span> <span class=o>=</span> <span class=nx>match</span><span class=p>.</span><span class=nx>indices</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>0</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>          <span class=nx>endIndex</span> <span class=o>=</span> <span class=nx>match</span><span class=p>.</span><span class=nx>indices</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>1</span><span class=p>]</span> <span class=o>+</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>          <span class=nx>highText</span> <span class=o>=</span> <span class=s1>&#39;&lt;span class=&#34;search-highlight&#34;&gt;&#39;</span> <span class=o>+</span> <span class=nx>match</span><span class=p>.</span><span class=nx>value</span><span class=p>.</span><span class=nx>slice</span><span class=p>(</span><span class=nx>startIndex</span><span class=p>,</span> <span class=nx>endIndex</span><span class=p>)</span> <span class=o>+</span> <span class=s1>&#39;&lt;/span&gt;&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>          <span class=nx>title</span> <span class=o>=</span> <span class=nx>match</span><span class=p>.</span><span class=nx>value</span><span class=p>.</span><span class=nx>slice</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=nx>startIndex</span><span class=p>)</span> <span class=o>+</span> <span class=nx>highText</span> <span class=o>+</span> <span class=nx>match</span><span class=p>.</span><span class=nx>value</span><span class=p>.</span><span class=nx>slice</span><span class=p>(</span><span class=nx>endIndex</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=nx>match</span><span class=p>.</span><span class=nx>key</span> <span class=o>==</span> <span class=s1>&#39;content&#39;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=nx>startIndex</span> <span class=o>=</span> <span class=nx>match</span><span class=p>.</span><span class=nx>indices</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>0</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>          <span class=nx>endIndex</span> <span class=o>=</span> <span class=nx>match</span><span class=p>.</span><span class=nx>indices</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>1</span><span class=p>]</span> <span class=o>+</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>          <span class=nx>highText</span> <span class=o>=</span> <span class=s1>&#39;&lt;span class=&#34;search-highlight&#34;&gt;&#39;</span> <span class=o>+</span> <span class=nx>match</span><span class=p>.</span><span class=nx>value</span><span class=p>.</span><span class=nx>slice</span><span class=p>(</span><span class=nx>startIndex</span><span class=p>,</span> <span class=nx>endIndex</span><span class=p>)</span> <span class=o>+</span> <span class=s1>&#39;&lt;/span&gt;&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>          <span class=nx>content</span> <span class=o>=</span> <span class=nx>match</span><span class=p>.</span><span class=nx>value</span><span class=p>.</span><span class=nx>slice</span><span class=p>(</span><span class=nb>Math</span><span class=p>.</span><span class=nx>max</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=nx>startIndex</span> <span class=o>-</span> <span class=mi>30</span><span class=p>),</span> <span class=nx>startIndex</span><span class=p>)</span> <span class=o>+</span> <span class=nx>highText</span> <span class=o>+</span> <span class=nx>match</span><span class=p>.</span><span class=nx>value</span><span class=p>.</span><span class=nx>slice</span><span class=p>(</span><span class=nx>endIndex</span><span class=p>,</span> <span class=nx>endIndex</span> <span class=o>+</span> <span class=mi>30</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>      <span class=nx>searchItems</span> <span class=o>=</span> <span class=nx>searchItems</span> <span class=o>+</span> <span class=s1>&#39;&lt;li&gt;&lt;a href=&#34;&#39;</span> <span class=o>+</span> <span class=nx>results</span><span class=p>[</span><span class=nx>item</span><span class=p>].</span><span class=nx>item</span><span class=p>.</span><span class=nx>permalink</span> <span class=o>+</span> <span class=s1>&#39;&#34;&gt;&#39;</span> <span class=o>+</span> <span class=s1>&#39;&lt;span class=&#34;title&#34;&gt;&#39;</span> <span class=o>+</span> <span class=nx>title</span> <span class=o>+</span> <span class=s1>&#39;&lt;/span&gt;&lt;br /&gt; &lt;span class=&#34;sc&#34;&gt;&#39;</span><span class=o>+</span> <span class=nx>content</span> <span class=o>+</span><span class=s1>&#39;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=c1>// only show first 5 results
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=k>if</span> <span class=p>(</span><span class=nx>searchItemCount</span> <span class=o>&gt;=</span> <span class=mi>5</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>resultsAvailable</span> <span class=o>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nb>document</span><span class=p>.</span><span class=nx>getElementById</span><span class=p>(</span><span class=s2>&#34;searchResults&#34;</span><span class=p>).</span><span class=nx>setAttribute</span><span class=p>(</span><span class=s2>&#34;style&#34;</span><span class=p>,</span> <span class=s2>&#34;display: block;&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nb>document</span><span class=p>.</span><span class=nx>getElementById</span><span class=p>(</span><span class=s2>&#34;searchResults&#34;</span><span class=p>).</span><span class=nx>innerHTML</span> <span class=o>=</span> <span class=nx>searchItems</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span><span class=nx>results</span><span class=p>.</span><span class=nx>length</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>first</span> <span class=o>=</span> <span class=nx>list</span><span class=p>.</span><span class=nx>firstChild</span><span class=p>.</span><span class=nx>firstElementChild</span><span class=p>;</span> <span class=c1>// first result container — used for checking against keyboard up/down location
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>last</span> <span class=o>=</span> <span class=nx>list</span><span class=p>.</span><span class=nx>lastChild</span><span class=p>.</span><span class=nx>firstElementChild</span><span class=p>;</span> <span class=c1>// last result container — used for checking against keyboard up/down location
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>最后，需要将 search.js 依赖引入，如下是引入的代码：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-html data-lang=html><span class=line><span class=cl>{{ $search := resources.Get &#34;js/search.js&#34; | minify | fingerprint }}
+</span></span><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>script</span> <span class=na>type</span><span class=o>=</span><span class=s>&#34;text/javascript&#34;</span> <span class=na>src</span><span class=o>=</span><span class=s>&#34;{{ $search.RelPermalink }}&#34;</span><span class=p>&gt;&lt;/</span><span class=nt>script</span><span class=p>&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=添加-html-代码>添加 HTML 代码</h3><p>HTML 页面的代码分为两个部分：搜索的按钮、搜索框和结果展示。</p><p>我这里将搜索的按钮放到的菜单栏，主要是一个可点击的按钮：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-html data-lang=html><span class=line><span class=cl>{{ if .Site.Params.fastSearch -}}
+</span></span><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>li</span> <span class=na>id</span><span class=o>=</span><span class=s>&#34;search-click&#34;</span> <span class=na>class</span><span class=o>=</span><span class=s>&#34;menu-item&#34;</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>a</span> <span class=na>class</span><span class=o>=</span><span class=s>&#34;menu-item-link&#34;</span> <span class=na>href</span><span class=o>=</span><span class=s>&#34;javascript:void(0)&#34;</span><span class=p>&gt;</span>搜索<span class=p>&lt;/</span><span class=nt>a</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;/</span><span class=nt>li</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>{{- end }}
+</span></span></code></pre></td></tr></table></div></div><p>对于搜索框，我选择的是弹出式的窗口，这里比较重要的是标签的 ID 需要和 search.js 脚本一致：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-html data-lang=html><span class=line><span class=cl>{{ if .Site.Params.fastSearch -}}
+</span></span><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>div</span> <span class=na>id</span><span class=o>=</span><span class=s>&#34;fastSearch&#34;</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>input</span> <span class=na>id</span><span class=o>=</span><span class=s>&#34;searchInput&#34;</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>ul</span> <span class=na>id</span><span class=o>=</span><span class=s>&#34;searchResults&#34;</span><span class=p>&gt;&lt;/</span><span class=nt>ul</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;/</span><span class=nt>div</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>{{- end }}
+</span></span></code></pre></td></tr></table></div></div><h3 id=添加-css-样式>添加 CSS 样式</h3><p>页面样式这部分，主要是看个人的喜好，这里只放出自己的样式：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-scss data-lang=scss><span class=line><span class=cl><span class=nn>#fastSearch</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=na>display</span><span class=o>:</span> <span class=ni>none</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=na>position</span><span class=o>:</span> <span class=ni>fixed</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=na>left</span><span class=o>:</span> <span class=mi>50</span><span class=kt>%</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=na>top</span><span class=o>:</span> <span class=nf>calc</span><span class=p>(</span><span class=mi>5</span><span class=kt>vw</span> <span class=o>+</span> <span class=mi>40</span><span class=kt>px</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=na>transform</span><span class=o>:</span> <span class=nf>translateX</span><span class=p>(</span><span class=o>-</span><span class=mi>50</span><span class=kt>%</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=na>z-index</span><span class=o>:</span> <span class=mi>4</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=na>width</span><span class=o>:</span> <span class=mi>650</span><span class=kt>px</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=na>background-color</span><span class=o>:</span> <span class=mh>#fff</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=na>box-shadow</span><span class=o>:</span> <span class=mi>0</span> <span class=mi>1</span><span class=kt>px</span> <span class=mi>2</span><span class=kt>px</span> <span class=mh>#3c4043</span><span class=mi>4</span><span class=kt>d</span><span class=o>,</span> <span class=mi>0</span> <span class=mi>2</span><span class=kt>px</span> <span class=mi>6</span><span class=kt>px</span> <span class=mi>2</span><span class=kt>px</span> <span class=mh>#3c4043</span><span class=mi>26</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=na>border-radius</span><span class=o>:</span> <span class=mi>4</span><span class=kt>px</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=na>overflow</span><span class=o>:</span> <span class=ni>hidden</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nt>input</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=na>padding</span><span class=o>:</span> <span class=mi>10</span><span class=kt>px</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=na>width</span><span class=o>:</span> <span class=mi>100</span><span class=kt>%</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=na>height</span><span class=o>:</span> <span class=mi>30</span><span class=kt>px</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=na>font-size</span><span class=o>:</span> <span class=mi>18</span><span class=kt>px</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=na>line-height</span><span class=o>:</span> <span class=mi>30</span><span class=kt>px</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=na>border</span><span class=o>:</span> <span class=ni>none</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=na>outline</span><span class=o>:</span> <span class=ni>none</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=na>font-family</span><span class=o>:</span> <span class=ni>inherit</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nn>#searchResults</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=na>display</span><span class=o>:</span> <span class=ni>none</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=na>overflow-y</span><span class=o>:</span> <span class=ni>auto</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=na>max-height</span><span class=o>:</span> <span class=mi>60</span><span class=kt>vh</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=na>padding-left</span><span class=o>:</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=na>margin</span><span class=o>:</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=na>border-top</span><span class=o>:</span> <span class=mi>1</span><span class=kt>px</span> <span class=ni>dashed</span> <span class=mh>#ddd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=nc>.search-highlight</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=na>color</span><span class=o>:</span> <span class=no>red</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=nt>li</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=na>list-style</span><span class=o>:</span> <span class=ni>none</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=na>margin</span><span class=o>:</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=nt>a</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=na>text-decoration</span><span class=o>:</span> <span class=ni>none</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=na>color</span><span class=o>:</span> <span class=ni>inherit</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=na>padding</span><span class=o>:</span> <span class=mi>6</span><span class=kt>px</span> <span class=mi>10</span><span class=kt>px</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=na>display</span><span class=o>:</span> <span class=ni>block</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=na>font-size</span><span class=o>:</span> <span class=mi>14</span><span class=kt>px</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=na>letter-spacing</span><span class=o>:</span> <span class=mf>.04</span><span class=kt>em</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=na>a</span><span class=o>:</span><span class=n>hover</span><span class=o>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>a</span><span class=o>:</span><span class=ni>focus</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=na>filter</span><span class=o>:</span> <span class=nf>brightness</span><span class=p>(</span><span class=mi>93</span><span class=kt>%</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=na>outline</span><span class=o>:</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=na>background-color</span><span class=o>:</span> <span class=nf>rgb</span><span class=p>(</span><span class=mi>240</span><span class=o>,</span> <span class=mi>240</span><span class=o>,</span> <span class=mi>240</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=nc>.title</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=na>font-weight</span><span class=o>:</span> <span class=mi>600</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=nt>li</span><span class=nc>.noSearchResult</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=na>text-align</span><span class=o>:</span> <span class=ni>center</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=na>margin</span><span class=o>:</span> <span class=mi>8</span><span class=kt>px</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=na>color</span><span class=o>:</span> <span class=mh>#888</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=样例展示>样例展示</h3><p><img class=lazyload src=/svg/loading.min.svg data-src=assets/hugo%e6%9c%ac%e5%9c%b0%e6%90%9c%e7%b4%a2%e5%8a%9f%e8%83%bd%e5%b1%95%e7%a4%ba.png data-srcset="assets/hugo%e6%9c%ac%e5%9c%b0%e6%90%9c%e7%b4%a2%e5%8a%9f%e8%83%bd%e5%b1%95%e7%a4%ba.png, assets/hugo%e6%9c%ac%e5%9c%b0%e6%90%9c%e7%b4%a2%e5%8a%9f%e8%83%bd%e5%b1%95%e7%a4%ba.png 1.5x, assets/hugo%e6%9c%ac%e5%9c%b0%e6%90%9c%e7%b4%a2%e5%8a%9f%e8%83%bd%e5%b1%95%e7%a4%ba.png 2x" data-sizes=auto alt=assets/hugo本地搜索功能展示.png title="hugo 本地搜索功能展示"></p><h2 id=总结>总结</h2><p>经过两天时间的奋斗，终于是将搜索功能给上线了。</p><p>不得不说，理想总是一开始美好，最初以为是一个完整、可用的教程，却没想到复制到代码之后就不可用了，最终是经过自己的魔改才得以使用。</p><p>总结一下就是，没有实践就没有话语权，千万不要做管中窥豹的那个人。</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2022-11-12</span></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-markdown href=/posts/z-turn/hugo-add-local-search.md target=_blank>阅读原始文档</a></span></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/%E5%8D%9A%E5%AE%A2.html>博客</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/programming-pattern/command-design-pattern.html class=prev rel=prev title="初识设计模式 - 命令模式"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>初识设计模式 - 命令模式</a>
+<a href=/posts/programming-pattern/state-design-pattern.html class=next rel=next title="初识设计模式 - 状态模式">初识设计模式 - 状态模式<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=giscus class=comment></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app>Giscus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.105.0">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=/ target=_blank>翔仔</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br><span class=icp>粤ICP备2021076569号</span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.7b0408f98c705b0bc4a799d0202fa56eb3205ac5921eabd9361c0b6788f342f09cb993017c67db1e9a9cc94773fbd5719a10c007bda24312630eb81919b8b8a1.js integrity="sha512-ewQI+YxwWwvEp5nQIC+lbrMgWsWSHqvZNhwLZ4jzQvCcuZMBfGfbHpqcyUdz+9VxmhDAB72iQxJjDrgZGbi4oQ=="></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.918bdd059e2c518e24c32fb5fd89144a49778f21f2166db93bf1e2ed311b3589660feb5777210257aee209f6d8bdde8c296883e34ff8bf4d5338f4be53132976.js integrity="sha512-kYvdBZ4sUY4kwy+1/YkUSkl3jyHyFm25O/Hi7TEbNYlmD+tXdyECV67iCfbYvd6MKWiD40/4v01TOPS+UxMpdg=="></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{giscus:{category:"Announcements",categoryId:"DIC_kwDOIa-wYs4CSg4a",darkTheme:"dark",emitMetadata:"0",inputPosition:"top",lang:"zh-CN",lazyLoading:!0,lightTheme:"light",mapping:"pathname",reactionsEnabled:"1",repo:"fatedeity/blog-comment",repoId:"R_kgDOIa-wYg"}},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.2970a33d719df7cd89cebf586152b32a8ed30012227fa81b44282950146e0f595d1c733779e4d423dda1004bdcf707ee64d0fadc3d21229cd66b960788f84bdb.js integrity="sha512-KXCjPXGd982Jzr9YYVKzKo7TABIif6gbRCgpUBRuD1ldHHM3eeTUI92hAEvc9wfuZND63D0hIpzWa5YHiPhL2w=="></script></body></html>
