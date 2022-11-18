@@ -1,0 +1,237 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>MongoDB - 索引知识 - 翔仔的个人博客</title><meta name=Description content="翔仔的个人博客，这是一个记录个人编程笔记的地方"><meta property="og:title" content="MongoDB - 索引知识"><meta property="og:description" content="学会 MongoDB 的增删改查只能算得上是“初窥门径”，了解、熟练掌握索引才能算得上“融会贯通”。基本可以认为数据库的索引知识是一个初级开发向中级开发转变所必备的知识。"><meta property="og:type" content="article"><meta property="og:url" content="https://fatedeity.cn/posts/database/mongodb-index-knowledge.html"><meta property="og:image" content="https://fatedeity.cn/favicon-32x32.png"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-11-18T08:38:28+08:00"><meta property="article:modified_time" content="2022-11-18T08:45:38+08:00"><meta property="og:site_name" content="翔仔的个人博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://fatedeity.cn/favicon-32x32.png"><meta name=twitter:title content="MongoDB - 索引知识"><meta name=twitter:description content="学会 MongoDB 的增删改查只能算得上是“初窥门径”，了解、熟练掌握索引才能算得上“融会贯通”。基本可以认为数据库的索引知识是一个初级开发向中级开发转变所必备的知识。"><meta name=application-name content="翔仔的个人博客"><meta name=apple-mobile-web-app-title content="翔仔的个人博客"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://fatedeity.cn/posts/database/mongodb-index-knowledge.html><link rel=prev href=https://fatedeity.cn/posts/database/mongodb-crud.html><link rel=stylesheet href=/css/style.min.68f5de0d22e326dedf4dfe8e806e9640b9919ae9e1b50df254df92f9036a799d59ba1cff1530486374bc022352a3adb1bab3b30a35aeafa690009183d4d51c2f.css integrity="sha512-aPXeDSLjJt7fTf6OgG6WQLmRmunhtQ3yVN+S+QNqeZ1Zuhz/FTBIY3S8AiNSo62xurOzCjWur6aQAJGD1NUcLw=="><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><meta name=google-site-verification content="NSfr_TOb9-BVneo8k_7eO6vn7dy9XsG3KB7jBQD8hiA"><meta name=baidu-site-verification content="code-jrerrcwoiq"><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"MongoDB - 索引知识","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/fatedeity.cn\/posts\/database\/mongodb-index-knowledge.html"},"genre":"posts","keywords":"NoSQL, MongoDB","wordcount":5443,"url":"https:\/\/fatedeity.cn\/posts\/database\/mongodb-index-knowledge.html","datePublished":"2022-11-18T08:38:28+08:00","dateModified":"2022-11-18T08:45:38+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"翔仔"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=翔仔的个人博客><img class="lazyload logo" src=/svg/loading.min.svg data-src=/logo-40x40.png data-srcset="/logo-40x40.png, /logo-40x40.png 1.5x, /logo-40x40.png 2x" data-sizes=auto alt=/logo-40x40.png title=/logo-40x40.png>翔仔的个人博客</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/>首页 </a><a class=menu-item href=/categories.html>分类 </a><a class=menu-item href=/tags.html>标签 </a><a class=menu-item href=/posts.html>归档 </a><a class=menu-item href=/about.html>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=翔仔的个人博客><img class="lazyload logo" src=/svg/loading.min.svg data-src=/logo-40x40.png data-srcset="/logo-40x40.png, /logo-40x40.png 1.5x, /logo-40x40.png 2x" data-sizes=auto alt=/logo-40x40.png title=/logo-40x40.png>翔仔的个人博客</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/ title>首页</a><a class=menu-item href=/categories.html title>分类</a><a class=menu-item href=/tags.html title>标签</a><a class=menu-item href=/posts.html title>归档</a><a class=menu-item href=/about.html title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class="toc-content always-active" id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">MongoDB - 索引知识</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>翔仔</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8A%80%E6%9C%AF.html><i class="far fa-folder fa-fw" aria-hidden=true></i>数据库技术</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2022-11-18>2022-11-18</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 5443 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 11 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#索引简介>索引简介</a><ul><li><a href=#什么是索引>什么是索引</a></li><li><a href=#何时不使用索引>何时不使用索引</a></li><li><a href=#mongodb-如何选择索引>MongoDB 如何选择索引</a></li></ul></li><li><a href=#索引的类型>索引的类型</a><ul><li><a href=#单一索引>单一索引</a></li><li><a href=#复合索引>复合索引</a></li><li><a href=#多键索引>多键索引</a></li><li><a href=#地理空间索引>地理空间索引</a></li><li><a href=#文本索引>文本索引</a></li><li><a href=#哈希索引>哈希索引</a></li></ul></li><li><a href=#索引的属性>索引的属性</a><ul><li><a href=#唯一索引>唯一索引</a></li><li><a href=#部分索引>部分索引</a></li><li><a href=#稀疏索引>稀疏索引</a></li><li><a href=#ttl-索引>TTL 索引</a></li><li><a href=#不区分大小写的索引>不区分大小写的索引</a></li></ul></li><li><a href=#索引的使用>索引的使用</a><ul><li><a href=#管理索引>管理索引</a></li><li><a href=#修改索引>修改索引</a></li><li><a href=#索引方向>索引方向</a></li><li><a href=#索引基数>索引基数</a></li><li><a href=#左前缀原则>左前缀原则</a></li><li><a href=#交叉索引>交叉索引</a></li><li><a href=#覆盖查询>覆盖查询</a></li></ul></li><li><a href=#查询计划>查询计划</a></li></ul></nav></div></div><div class=content id=content><p>学会 MongoDB 的增删改查只能算得上是“初窥门径”，了解、熟练掌握索引才能算得上“融会贯通”。基本可以认为数据库的索引知识是一个初级开发向中级开发转变所必备的知识。</p><h2 id=索引简介>索引简介</h2><h3 id=什么是索引>什么是索引</h3><p>索引最常用的比喻就是书籍的目录，查询索引就像查询一本书的目录。</p><p>索引支持 MongoDB 查询的高效执行。如果没有索引，MongoDB 必须扫描集合中每一个文档，以选择与查询语句相匹配的文档。如果查询存在适当的索引，MongoDB 就可以使用索引来限制它扫描的文档数。</p><p>筛选字段时使用索引提速有以下几个因素：</p><ul><li>索引数据通过 B 树来存储，从而使得搜索的时间复杂度为 $O(\log n)$</li><li>索引本身存储在高速缓存中，相比磁盘 IO 有大幅的性能提升（有的时候数据量非常大的时候，索引数据也会非常大，当大到超出内存容量的时候，会导致部分索引数据存储在磁盘上，这会导致磁盘 IO 的开销大幅增加，从而影响性能，所以务必要保证有足够的内存能容下所有的索引数据）</li></ul><p>索引可以显著缩短查询时间，但是使用索引、维护索引是有代价的。在执行写入操作时，除了要更新文档之外，还必须更新索引，这必然会影响写入的性能。</p><p>因此，当有大量写操作而读操作少时，或者不考虑读操作的性能时，都不推荐建立索引。</p><h3 id=何时不使用索引>何时不使用索引</h3><p>查询结果集在原集合中占比越大，索引就会越低效。</p><p>出现这种情况的原因是：使用索引需要进行两次查找：一次是查找索引项，一次是根据索引的指针去查找其指向的文档。而全表扫描只需进行一次查找：查找文档。在最坏的情况下（返回集合内的所有文档），使用索引进行查找的次数会是全表扫描的两倍，通常会明显比全表扫描慢。</p><p>根据经验，如果查询返回集合中 30% 或更少的文档，则索引通常可以加快速度。然而，这个数字会在 2%～60% 变动。</p><p>通常，索引使用的情况有这些：比较大的集合、比较大的文档、选择性查询。</p><p>而全表扫描相对使用的情况有这些：比较小的集合、比较小的文档、非选择性查询。</p><p>总结一下就是，在以下情况不推荐使用索引：</p><ul><li>有大量写操作而读操作较少的场景，更新损耗比查询的损耗更大，不推荐建索引</li><li>查询结果集在原集合中占比越大，索引就会越低效</li><li>索引基数（字段去重后的数量）越低，索引的作用就越小</li></ul><h3 id=mongodb-如何选择索引>MongoDB 如何选择索引</h3><p>MongoDB 如何选择索引具有自己的机制，通常是根据要搜索的字段和一些附加信息（比如是否有排序）有关。基于这些信息，系统会识别出可能用于满足查询的候选索引。</p><p>当候选索引被选出之后，则会进行候选索引竞赛的阶段。</p><p>在竞赛阶段，MongoDB 会分别为这些候选索引创建 1 个查询计划，并在并行线程中运行这些查询计划，每个线程使用不同的索引。</p><p><img class=lazyload src=/svg/loading.min.svg data-src=assets/%e5%80%99%e9%80%89%e7%b4%a2%e5%bc%95%e7%ab%9e%e8%b5%9b%e9%98%b6%e6%ae%b5.png data-srcset="assets/%e5%80%99%e9%80%89%e7%b4%a2%e5%bc%95%e7%ab%9e%e8%b5%9b%e9%98%b6%e6%ae%b5.png, assets/%e5%80%99%e9%80%89%e7%b4%a2%e5%bc%95%e7%ab%9e%e8%b5%9b%e9%98%b6%e6%ae%b5.png 1.5x, assets/%e5%80%99%e9%80%89%e7%b4%a2%e5%bc%95%e7%ab%9e%e8%b5%9b%e9%98%b6%e6%ae%b5.png 2x" data-sizes=auto alt=assets/候选索引竞赛阶段.png title=候选索引竞赛阶段></p><p>到达目标状态的第一个查询计划成为赢家。更重要的是，具有相同 <strong>形状</strong> 的其他查询都会选择这个索引。</p><p>服务端会维护这些查询计划的缓存，以备将来用于进行相同 <strong>形状</strong> 的查询。</p><p>通常，以下这些事件导致缓存被清除掉：随着时间变化、重建特定的索引、添加或删除索引、显式清除计划缓存、mongod 进程的重启等。</p><h2 id=索引的类型>索引的类型</h2><h3 id=单一索引>单一索引</h3><p><img class=lazyload src=/svg/loading.min.svg data-src=assets/%e5%8d%95%e4%b8%80%e7%b4%a2%e5%bc%95%e5%9b%be%e8%a7%a3.png data-srcset="assets/%e5%8d%95%e4%b8%80%e7%b4%a2%e5%bc%95%e5%9b%be%e8%a7%a3.png, assets/%e5%8d%95%e4%b8%80%e7%b4%a2%e5%bc%95%e5%9b%be%e8%a7%a3.png 1.5x, assets/%e5%8d%95%e4%b8%80%e7%b4%a2%e5%bc%95%e5%9b%be%e8%a7%a3.png 2x" data-sizes=auto alt=assets/单一索引图解.png title=单一索引></p><p>MongoDB 提供了默认的 <code>_id</code> 索引，在此之外，还支持对文档的单个字段创建用户定义的升序、降序索引。但是对于单字段索引，索引键的排序顺序并不重要，因为 MongoDB 可以在任意方向上遍历索引。</p><h3 id=复合索引>复合索引</h3><p><img class=lazyload src=/svg/loading.min.svg data-src=assets/%e5%a4%8d%e5%90%88%e7%b4%a2%e5%bc%95%e5%9b%be%e8%a7%a3.png data-srcset="assets/%e5%a4%8d%e5%90%88%e7%b4%a2%e5%bc%95%e5%9b%be%e8%a7%a3.png, assets/%e5%a4%8d%e5%90%88%e7%b4%a2%e5%bc%95%e5%9b%be%e8%a7%a3.png 1.5x, assets/%e5%a4%8d%e5%90%88%e7%b4%a2%e5%bc%95%e5%9b%be%e8%a7%a3.png 2x" data-sizes=auto alt=assets/复合索引图解.png title=复合索引></p><p>MongoDB 还支持在多个字段上定义索引，即复合索引。</p><p>在考虑复合索引的设计时，需要知道对于利用索引的通用查询模式，如何处理其等值过滤、多值过滤以及排序这些部分。大部分情况可以参考以下准则：</p><ul><li>等值过滤字段应该在最前面</li><li>排序字段应在多值过滤字段之前</li><li>多值过滤字段应该在最后面</li></ul><h3 id=多键索引>多键索引</h3><p><img class=lazyload src=/svg/loading.min.svg data-src=assets/%e5%a4%9a%e9%94%ae%e7%b4%a2%e5%bc%95%e5%9b%be%e8%a7%a3.png data-srcset="assets/%e5%a4%9a%e9%94%ae%e7%b4%a2%e5%bc%95%e5%9b%be%e8%a7%a3.png, assets/%e5%a4%9a%e9%94%ae%e7%b4%a2%e5%bc%95%e5%9b%be%e8%a7%a3.png 1.5x, assets/%e5%a4%9a%e9%94%ae%e7%b4%a2%e5%bc%95%e5%9b%be%e8%a7%a3.png 2x" data-sizes=auto alt=assets/多键索引图解.png title=多键索引></p><p>多键索引和复合索引的概念不能搞混，如果一个文档有被索引的数组字段，则该索引会立即被标记为多键索引。</p><p>对数组创建索引就是对数组中的每个元素创建索引，而不是对数组本身创建索引。</p><p>对数组创建索引有一个例外，即 MongoDB 最多支持对一个数组字段创建索引，索引项中不允许出现多个数组字段，这是为了避免多键索引中的索引项数量呈爆炸式地增长。</p><p>多键索引通常会比非多键索引慢一些，可能会有许多索引项指向同一个文档。而一旦索引被标记为多键多键，就再也无法变成非多键索引，唯一办法是将多键索引删除重建成非多键索引。</p><h3 id=地理空间索引>地理空间索引</h3><p>为了支持对地理空间坐标数据的高效查询，MongoDB 提供了两个特殊索引：返回结果时使用平面几何的 <code>2d</code> 索引和使用球面几何的 <code>2dsphere</code> 索引。</p><p>创建索引时，通过将索引键的值设置成 <code>2d</code> 或者是 <code>2dsphere</code> 即可创建地理空间索引。</p><h3 id=文本索引>文本索引</h3><p>MongoDB 提供了一种文本索引类型，支持在集合中搜索字符串内容。这些文本索引不存在特定于语言的停用词（如 <code>the</code>、<code>a</code>、<code>or</code> 等），并且集合中的词干仅存储词根。</p><p>文本索引需要一定数量的与被索引字段中单词成比例的键，创建文本索引可能会耗费大量的系统资源。同时写操作通常比对单一索引、符合索引，甚至多键索引的写操作开销更大，应在需求明确时创建文本索引。</p><p>创建索引时，通过将索引键的值设置成 <code>text</code> 即可创建文本索引，并且可以同时对多个键创建文本索引。在创建文本索引时，也可以用 <code>$**</code> 表示文档的所有字符串字段。</p><p>默认情况下，文本索引中的每个字段都会被平等对待。也可以通过 <code>wights</code> 属性设置本文索引中每个键的权重。但需要注意的是，文本索引一旦被创建，就不能改变索引的权重了（除非删除索引再重建）。</p><p>文本索引能解决搜索关键字的问题，但对于在中国使用汉字的应用程序来说，请谨慎使用。从 <a href=https://www.mongodb.com/docs/manual/reference/text-search-languages/ target=_blank rel="noopener noreffer">官方文档</a> 中可以了解到支持到语言，其中并没有包含汉字。</p><h3 id=哈希索引>哈希索引</h3><p>为了支持基于哈希的分片，MongoDB 提供了哈希索引类型，索引字段值的哈希值。这些索引在其范围内具有更随机的值分布，但仅支持等值匹配而不支持范围查询。</p><p>对于嵌入文档，哈希索引的哈希函数会折叠其值并计算哈希值，而对于数组，哈希索引是不支持的，对其创建哈希索引时会返回错误。</p><p>MongoDB 不支持在哈希索引上指定唯一约束，可以通过对存储原始值的键构建唯一索引以指定唯一约束。</p><p>在创建索引时，通过将键的值设置为 <code>hashed</code> 即可将其设置成哈希索引。</p><h2 id=索引的属性>索引的属性</h2><h3 id=唯一索引>唯一索引</h3><p>索引的唯一属性会导致 MongoDB 拒绝索引字段的重复值。除了唯一约束之外，唯一索引在功能上可与其他 MongoDB 索引相同。</p><p>对于单一索引，唯一属性针对的是单个键值；对于复合索引，唯一属性针对的是所有键值的组合。</p><p>在某些情况下，索引桶（index bucket）的大小是有限制的，如果索引项超过了索引桶的大小就不会被包含在索引中。</p><p>在 MongoDB 4.2 之前，索引中包含的字段必须小于 1024 字节，也就是说大小超过 1024 字节的键不会受到唯一索引的约束；在 MongoDB 4.2 及以后版本，这个限制被去掉了。</p><p>创建索引时设置 <code>{unique: true}</code> 可以设置唯一索引。</p><h3 id=部分索引>部分索引</h3><p>部分索引在 3.2 版本新增，其表示仅索引符合特定过滤表达式的文档。</p><p>MongoDB 的部分索引只会在数据的一个子集上创建，通过索引集合中的文档子集，部分索引具有较低的存储要求，可以减少索引创建和维护的性能成本。</p><p>创建索引时设置 <code>partialFilterExpression</code> 选项，可以只对符合表达式要求的值做索引。</p><p>当查询条件匹配部分索引时，不在索引内的值不在搜索结果当中，如果需要返回那些缺少字段的文档，可以使用 <code>hint</code> 强制执行全表扫描。</p><h3 id=稀疏索引>稀疏索引</h3><p>稀疏索引也称为间隙索引，就是包含具有索引字段的文档的条目，跳过没有索引字段的文档。</p><p>通过上述的定义可以看出，稀疏索引是部分索引的子集，创建部分索引时设定索引键必须存在的过滤表达式即可达到稀疏索引的作用。</p><p>将稀疏索引和唯一索引组合，以拒绝具有字段重复值的文档，但忽略没有索引键的文档。</p><p>创建索引时设置 <code>{sparse: true}</code> 可以设置稀疏索引。</p><h3 id=ttl-索引>TTL 索引</h3><p>TTL 索引提供了一个过期机制，允许为每一个文档设置一个过期时间，当一个文档达到预设的过期时间之后就会被删除。</p><p>TTL 索引有自己适合的场景，如机器生成的事件数据，日志和会话信息等，这些信息通常只需在数据库中保存有限的时间。</p><p>MongoDB 会每分钟扫描一次 TTL 索引，因此不应依赖于秒级的粒度。</p><p>创建索引时设置 <code>{expireAfterSeconds: &lt;seconds>}</code> 可以设置 TTL 索引，通常索引键时日期类型时，TTL 索引才会起作用。</p><blockquote><p>MongoDB 还提供了一种类似于固定长度队列的集合，称作为“固定集合”。其长度是固定的，当集合已满足设定大小时，旧的文档会被删除，新的文档将取而代之。</p><p>通常来说，相对于固定集合，MongoDB 优先推荐使用 TTL 索引，因为其在 WiredTiger 存储引擎（在 3.2 版本开始作为默认存储引擎）中性能更好，可操作性也更强。</p></blockquote><h3 id=不区分大小写的索引>不区分大小写的索引</h3><p>在 3.4 版本，MongoDB 提供了不区分大小写索引属性，支持在不考虑大小写的情况下执行字符串比较的查询。</p><p>创建索引时通过设置 <code>{collation: {locale : &lt;locale>, strength : &lt;strength>}}</code> 可以创建不区分大小写的索引。</p><p>其中，<code>locale</code> 指定语言规则，可以通过 <a href=https://www.mongodb.com/docs/v4.4/reference/collation-locales-defaults/#std-label-collation-languages-locales target=_blank rel="noopener noreffer">官方文档</a> 查看更多，使用 <code>strength</code> 可以指定比较级别，可以通过 <a href=https://www.mongodb.com/docs/v4.4/reference/collation/#std-label-collation-document-fields target=_blank rel="noopener noreffer">官方文档</a> 了解更详细内容。</p><h2 id=索引的使用>索引的使用</h2><h3 id=管理索引>管理索引</h3><p>索引的所有信息都存储在 <code>system.indexes</code> 集合中，这是一个保留集合，不支持修改或删除，只能通过相关命令对其进行操作。</p><p>MongoDB 提供了一些相关命令管理索引，以下是常用的方法：</p><ul><li><code>db.collection.createIndex(keys, options, commitQuorum)</code>: 创建单个索引</li><li><code>db.collection.createIndexes([keyPatterns], options, commitQuorum)</code>: 创建多个索引</li><li><code>db.collection.dropIndex(index)</code>: 删除集合中除 <code>_id</code> 的指定索引</li><li><code>db.collection.dropIndexes()</code>: 不传参时可以删除集合中除 <code>_id</code> 的全部索引，也可以指定索引名实现删除指定索引</li><li><code>db.collection.getIndexes()</code>: 查询集合的索引信息</li><li><code>db.collection.hideIndex(&lt;index>)</code>: 在 4.4 版本新增，隐藏索引对查询计划器不可见，不能用于查询，可以通过隐藏索引发现在不删除索引的情况下评估删除所有的潜在影响</li><li><code>db.collection.unhideIndex(&lt;index>)</code>: 取消隐藏索引</li></ul><p>MongoDB 的索引名称可标识索引，大部分的索引管理命令都支持使用名称指定索引。</p><p>索引名称的默认形式是 <code>keyname1dir1_keyname2_dir2..._keynameN_dirN</code>，其中 <code>keynameX</code> 是索引的键，<code>dirX</code> 是索引的方向（<code>1</code> 或 <code>-1</code>）。</p><p>索引名称是有字符数限制的，并且比较多的键时也会难以辨识，因此创建复杂的索引时可以自定义名称。</p><h3 id=修改索引>修改索引</h3><p>当需要修改索引时，通常的做法是先使用 <code>dropIndex(index)</code> 删除指定索引，再使用 <code>createIndex</code> 重建索引。</p><p>修改索引的操作一般发生在应用程序已经上线之后，这时就需要考虑到创建索引既耗时又耗资源，考虑使用 <code>background</code> 选项在后台创建索引，尽可能减少对读写操作的影响。</p><p>在 MongoDB 4.2 之后，引入了混合索引创建的机制，即在索引创建的开始和结束时持有排他锁，创建过程中其余部分会交错地让步于读写操作。</p><h3 id=索引方向>索引方向</h3><p>使用单一索引时，索引键的方向并不重要，MongoDB 会根据排序的方向，选择扫描索引的方向。只有基于多个查询条件进行排序时，索引方向才是重要的。</p><p>对于复合索引，有可能对不同的键设置不同的方向，这与实际的业务有关系。</p><p>通常是创建与排序方向相同的索引方向，且相互反转（在每个方向上都乘以 -1）的索引是等价的：<code>{age: 1, username: -1}</code> 适用的查询与 <code>{age: -1, username: 1}</code> 完全一样。</p><h3 id=索引基数>索引基数</h3><p>索引的基数是指集合中某个字段有多少个不同的值，即值去重后的数量。</p><p>通常来说，一个字段的基数越高，这个字段上的索引就越有用。对于基数比较低的字段，索引通常无法排除大量可能的匹配项。</p><p>一个例子就是，如果对“性别”字段创建索引，而查找“男性”时仅能将搜索空间缩小大约 50%，其索引作用相对是较低的。</p><p>根据经验来说，应该在基数比较高的键上创建索引，或者至少应该把基数比较高的键放在复合索引的前面（在低基数的键之前）。</p><h3 id=左前缀原则>左前缀原则</h3><p>MongoDB 的复合索引遵循左前缀原则：拥有多个键的索引，可以同时得到所有这些键的前缀组成的索引，但不包括除左前缀之外的其他子集。</p><p>比如说，有一个类似 <code>{a: 1, b: 1, c: 1, ..., z: 1}</code> 这样的索引，那么实际上也等于有了 <code>{a: 1}</code>、<code>{a: 1, b: 1}</code>、<code>{a: 1, b: 1, c: 1}</code> 等一系列索引，但是不会有 <code>{b: 1}</code> 这样的非左前缀的索引。</p><h3 id=交叉索引>交叉索引</h3><p>在 2.6 版本新增，MongoDB 可以使用交叉索引来完成查询。</p><p>对于指定复合条件的查询，如果一个索引可以满足查询条件的一部分，而另一个索引可以满足查询条件的另一部分，则 MongoDB 可以使用两个索引的交集来完成查询。</p><p>使用复合索引还是使用交叉索引更有效取决于具体的查询和系统。</p><h3 id=覆盖查询>覆盖查询</h3><p><img class=lazyload src=/svg/loading.min.svg data-src=assets/%e8%a6%86%e7%9b%96%e6%9f%a5%e8%af%a2%e5%9b%be%e8%a7%a3.png data-srcset="assets/%e8%a6%86%e7%9b%96%e6%9f%a5%e8%af%a2%e5%9b%be%e8%a7%a3.png, assets/%e8%a6%86%e7%9b%96%e6%9f%a5%e8%af%a2%e5%9b%be%e8%a7%a3.png 1.5x, assets/%e8%a6%86%e7%9b%96%e6%9f%a5%e8%af%a2%e5%9b%be%e8%a7%a3.png 2x" data-sizes=auto alt=assets/覆盖查询图解.png title=覆盖查询图解></p><p>当查询子句和查询投影仅包含索引字段时，MongoDB 可以直接从索引返回结果，而无需扫描任何文档或加载文档到内存。</p><p>这样的覆盖查询非常有效，效率非常高。必要时还需要对不做查询的字段进行索引，以满足覆盖索引的要求。</p><p>如果对一个被覆盖的查询运行 <code>explain</code>，那么结果中会有一个并不处于 <code>FETCH</code> 阶段下的 <code>IXSCAN</code> 阶段，并且在 <code>executionStats</code> 中，<code>totalDocsExamined</code> 的值是 <code>0</code>。</p><h2 id=查询计划>查询计划</h2><p>使用 <code>explain</code> 可以为查询提供大量的信息，它是慢查询的重要诊断工具之一。下述是执行结果示例：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;queryPlanner&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;plannerVersion&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;namespace&#34;</span><span class=p>:</span> <span class=s2>&#34;test.users&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;indexFilterSet&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;parsedQuery&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;age&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;$eq&#34;</span><span class=p>:</span> <span class=mi>42</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;winningPlan&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;stage&#34;</span><span class=p>:</span> <span class=s2>&#34;FETCH&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;inputStage&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;stage&#34;</span><span class=p>:</span> <span class=s2>&#34;IXSCAN&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;keyPattern&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;age&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;username&#34;</span><span class=p>:</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;indexName&#34;</span><span class=p>:</span> <span class=s2>&#34;age_1_username_1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;isMultiKey&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;multiKeyPaths&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;age&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;username&#34;</span><span class=p>:</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;isUnique&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;isSparse&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;isPartial&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;indexVersion&#34;</span><span class=p>:</span> <span class=mi>2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;direction&#34;</span><span class=p>:</span> <span class=s2>&#34;forward&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;indexBounds&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;age&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>                        <span class=s2>&#34;[42.0, 42.0]&#34;</span>
+</span></span><span class=line><span class=cl>                    <span class=p>],</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;username&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>                        <span class=s2>&#34;[MinKey, MaxKey]&#34;</span>
+</span></span><span class=line><span class=cl>                    <span class=p>]</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;rejectedPlans&#34;</span><span class=p>:</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;executionStats&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;executionSuccess&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;nReturned&#34;</span><span class=p>:</span> <span class=mi>8449</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;executionTimeMillis&#34;</span><span class=p>:</span> <span class=mi>15</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;totalKeysExamined&#34;</span><span class=p>:</span> <span class=mi>8449</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;totalDocsExamined&#34;</span><span class=p>:</span> <span class=mi>8449</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;executionStages&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;stage&#34;</span><span class=p>:</span> <span class=s2>&#34;FETCH&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;nReturned&#34;</span><span class=p>:</span> <span class=mi>8449</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;executionTimeMillisEstimate&#34;</span><span class=p>:</span> <span class=mi>10</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;works&#34;</span><span class=p>:</span> <span class=mi>8450</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;advanced&#34;</span><span class=p>:</span> <span class=mi>8449</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;needTime&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;needYield&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;saveState&#34;</span><span class=p>:</span> <span class=mi>66</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;restoreState&#34;</span><span class=p>:</span> <span class=mi>66</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;isEOF&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;invalidates&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;docsExamined&#34;</span><span class=p>:</span> <span class=mi>8449</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;alreadyHasObj&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;inputStage&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;stage&#34;</span><span class=p>:</span> <span class=s2>&#34;IXSCAN&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;nReturned&#34;</span><span class=p>:</span> <span class=mi>8449</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;executionTimeMillisEstimate&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;works&#34;</span><span class=p>:</span> <span class=mi>8450</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;advanced&#34;</span><span class=p>:</span> <span class=mi>8449</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;needTime&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;needYield&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;saveState&#34;</span><span class=p>:</span> <span class=mi>66</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;restoreState&#34;</span><span class=p>:</span> <span class=mi>66</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;isEOF&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;invalidates&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;keyPattern&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;age&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;username&#34;</span><span class=p>:</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;indexName&#34;</span><span class=p>:</span> <span class=s2>&#34;age_1_username_1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;isMultiKey&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;multiKeyPaths&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;age&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;username&#34;</span><span class=p>:</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;isUnique&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;isSparse&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;isPartial&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;indexVersion&#34;</span><span class=p>:</span> <span class=mi>2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;direction&#34;</span><span class=p>:</span> <span class=s2>&#34;forward&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;indexBounds&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;age&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>                        <span class=s2>&#34;[42.0, 42.0]&#34;</span>
+</span></span><span class=line><span class=cl>                    <span class=p>],</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;username&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>                        <span class=s2>&#34;[MinKey, MaxKey]&#34;</span>
+</span></span><span class=line><span class=cl>                    <span class=p>]</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;keysExamined&#34;</span><span class=p>:</span> <span class=mi>8449</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;seeks&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;dupsTested&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;dupsDropped&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;seenInvalidated&#34;</span><span class=p>:</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;serverInfo&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;host&#34;</span><span class=p>:</span> <span class=s2>&#34;eoinbrazil-laptop-osx&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;port&#34;</span><span class=p>:</span> <span class=mi>27017</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;version&#34;</span><span class=p>:</span> <span class=s2>&#34;4.0.12&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;gitVersion&#34;</span><span class=p>:</span> <span class=s2>&#34;5776e3cbf9e7afe86e6b29e22520ffb6766e95d4&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;ok&#34;</span><span class=p>:</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>在 <code>explain</code> 的结果当中，<code>queryPlanner</code> 描述了所有的查询计划，其中包括一个获胜的查询计划 <code>winningPlan</code> 字段，和一组失败的查询计划 <code>rejectedPlans</code> 字段。</p><p><code>executionStats</code> 字段包含了描述获胜查询计划所执行的统计信息。</p><ul><li><code>isMultiKey</code>: 是否使用了多键索引</li><li><code>nReturned</code>: 返回的文档数量</li><li><code>totalDocsExamined</code>: 按照索引指针在磁盘上查找实际文档的次数</li><li><code>totalKeysExamined</code>: 使用了索引时是查找过的索引条目数量，全表扫描时是检查过的文档数量</li><li><code>stage</code>: 查询阶段，<code>COLLSCAN</code> 表示集合扫描，<code>IXSCAN</code> 表示索引扫描</li><li><code>needYield</code>: 为了让写请求顺利进行，本次查询暂停的次数</li><li><code>executionTimeMillis</code>: 所有查询计划花费的总毫秒数，不是所选的最优查询计划所耗费的时间</li><li><code>indexBounds</code>: 描述了索引是如何被使用的，并给出了索引的遍历范围</li></ul><p>优化的一个方向是，通过将 <code>nReturned</code> 和 <code>totalKeysExamined</code> 作比较，两个数值越是接近，表示索引的选择性越高。</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2022-11-18</span></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-markdown href=/posts/database/mongodb-index-knowledge.md target=_blank>阅读原始文档</a></span></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/nosql.html>NoSQL</a>,&nbsp;<a href=/tags/mongodb.html>MongoDB</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/database/mongodb-crud.html class=prev rel=prev title="MongoDB - 增删改查"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>MongoDB - 增删改查</a></div></div><div id=comments><div id=giscus class=comment></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app>Giscus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.106.0">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=/ target=_blank>翔仔</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br><span class=icp>粤ICP备2021076569号</span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.7b0408f98c705b0bc4a799d0202fa56eb3205ac5921eabd9361c0b6788f342f09cb993017c67db1e9a9cc94773fbd5719a10c007bda24312630eb81919b8b8a1.js integrity="sha512-ewQI+YxwWwvEp5nQIC+lbrMgWsWSHqvZNhwLZ4jzQvCcuZMBfGfbHpqcyUdz+9VxmhDAB72iQxJjDrgZGbi4oQ=="></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.918bdd059e2c518e24c32fb5fd89144a49778f21f2166db93bf1e2ed311b3589660feb5777210257aee209f6d8bdde8c296883e34ff8bf4d5338f4be53132976.js integrity="sha512-kYvdBZ4sUY4kwy+1/YkUSkl3jyHyFm25O/Hi7TEbNYlmD+tXdyECV67iCfbYvd6MKWiD40/4v01TOPS+UxMpdg=="></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript src=/js/baidu_tongji.b0e0519286d388eaa2ec7550b8dbb0df7488e085ea2e108bbd48ca6171b7696797554da5cdf808f754e5dae27659b75d83402926da5821c7ae2409445a7b488e.js integrity="sha512-sOBRkobTiOqi7HVQuNuw33SI4IXqLhCLvUjKYXG3aWeXVU2lzfgI91Tl2uJ2Wbddg0ApJtpYIceuJAlEWntIjg=="></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{giscus:{category:"Announcements",categoryId:"DIC_kwDOIa-wYs4CSg4a",darkTheme:"dark",emitMetadata:"0",inputPosition:"top",lang:"zh-CN",lazyLoading:!0,lightTheme:"light",mapping:"pathname",reactionsEnabled:"1",repo:"fatedeity/blog-comment",repoId:"R_kgDOIa-wYg"}},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.2970a33d719df7cd89cebf586152b32a8ed30012227fa81b44282950146e0f595d1c733779e4d423dda1004bdcf707ee64d0fadc3d21229cd66b960788f84bdb.js integrity="sha512-KXCjPXGd982Jzr9YYVKzKo7TABIif6gbRCgpUBRuD1ldHHM3eeTUI92hAEvc9wfuZND63D0hIpzWa5YHiPhL2w=="></script></body></html>
