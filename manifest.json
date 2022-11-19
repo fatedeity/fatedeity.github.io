@@ -1,7 +1,7 @@
 {
-    "name": "翔仔的个人博客",
-    "short_name": "翔仔的个人博客",
-    "description": "翔仔的个人博客，这是一个记录个人编程笔记的地方",
+    "name": "程序员翔仔",
+    "short_name": "程序员翔仔",
+    "description": "程序员翔仔，一个记录了翔仔个人编程笔记的地方",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
