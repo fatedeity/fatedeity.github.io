@@ -1,0 +1,229 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>MongoDB - 聚合查询 - 程序员翔仔</title><meta name=Description content="程序员翔仔，一个记录了翔仔个人编程笔记的地方"><meta property="og:title" content="MongoDB - 聚合查询"><meta property="og:description" content="在实际使用时，必不可少地需要将多个文档甚至是多个集合汇总到一起计算、分析，MongoDB 提供了原生聚合框架支持这样的计算、分析。"><meta property="og:type" content="article"><meta property="og:url" content="https://fatedeity.cn/posts/database/mongodb-aggregate-query.html"><meta property="og:image" content="https://fatedeity.cn/favicon-32x32.png"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-11-24T08:38:28+08:00"><meta property="article:modified_time" content="2022-11-24T08:42:27+08:00"><meta property="og:site_name" content="程序员翔仔"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://fatedeity.cn/favicon-32x32.png"><meta name=twitter:title content="MongoDB - 聚合查询"><meta name=twitter:description content="在实际使用时，必不可少地需要将多个文档甚至是多个集合汇总到一起计算、分析，MongoDB 提供了原生聚合框架支持这样的计算、分析。"><meta name=application-name content="程序员翔仔"><meta name=apple-mobile-web-app-title content="程序员翔仔"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://fatedeity.cn/posts/database/mongodb-aggregate-query.html><link rel=prev href=https://fatedeity.cn/posts/database/mongodb-index-knowledge.html><link rel=stylesheet href=/css/style.min.68f5de0d22e326dedf4dfe8e806e9640b9919ae9e1b50df254df92f9036a799d59ba1cff1530486374bc022352a3adb1bab3b30a35aeafa690009183d4d51c2f.css integrity="sha512-aPXeDSLjJt7fTf6OgG6WQLmRmunhtQ3yVN+S+QNqeZ1Zuhz/FTBIY3S8AiNSo62xurOzCjWur6aQAJGD1NUcLw=="><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><meta name=google-site-verification content="NSfr_TOb9-BVneo8k_7eO6vn7dy9XsG3KB7jBQD8hiA"><meta name=baidu-site-verification content="code-jrerrcwoiq"><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"MongoDB - 聚合查询","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/fatedeity.cn\/posts\/database\/mongodb-aggregate-query.html"},"genre":"posts","keywords":"NoSQL, MongoDB","wordcount":2788,"url":"https:\/\/fatedeity.cn\/posts\/database\/mongodb-aggregate-query.html","datePublished":"2022-11-24T08:38:28+08:00","dateModified":"2022-11-24T08:42:27+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"翔仔"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=程序员翔仔><img class="lazyload logo" src=/svg/loading.min.svg data-src=/logo-40x40.png data-srcset="/logo-40x40.png, /logo-40x40.png 1.5x, /logo-40x40.png 2x" data-sizes=auto alt=/logo-40x40.png title=/logo-40x40.png>程序员翔仔</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/>首页 </a><a class=menu-item href=/categories.html>分类 </a><a class=menu-item href=/tags.html>标签 </a><a class=menu-item href=/posts.html>归档 </a><a class=menu-item href=/about.html>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=程序员翔仔><img class="lazyload logo" src=/svg/loading.min.svg data-src=/logo-40x40.png data-srcset="/logo-40x40.png, /logo-40x40.png 1.5x, /logo-40x40.png 2x" data-sizes=auto alt=/logo-40x40.png title=/logo-40x40.png>程序员翔仔</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/ title>首页</a><a class=menu-item href=/categories.html title>分类</a><a class=menu-item href=/tags.html title>标签</a><a class=menu-item href=/posts.html title>归档</a><a class=menu-item href=/about.html title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class="toc-content always-active" id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">MongoDB - 聚合查询</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>翔仔</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8A%80%E6%9C%AF.html><i class="far fa-folder fa-fw" aria-hidden=true></i>数据库技术</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2022-11-24>2022-11-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 2788 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 6 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#聚合管道>聚合管道</a></li><li><a href=#管道阶段>管道阶段</a><ul><li><a href=#常见操作>常见操作</a></li><li><a href=#更多操作---投影>更多操作 - 投影</a></li><li><a href=#更多操作---展开>更多操作 - 展开</a></li><li><a href=#更多操作---分组>更多操作 - 分组</a></li><li><a href=#更多操作---入库>更多操作 - 入库</a></li></ul></li><li><a href=#条件组累加器>条件组累加器</a><ul><li><a href=#算术运算>算术运算</a></li><li><a href=#最值运算>最值运算</a></li><li><a href=#数组提取>数组提取</a></li><li><a href=#其他运算>其他运算</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>在实际使用时，必不可少地需要将多个文档甚至是多个集合汇总到一起计算、分析，MongoDB 提供了原生聚合框架支持这样的计算、分析。</p><h2 id=聚合管道>聚合管道</h2><p>聚合框架是 MongoDB 中的一组分析工具，可以对一个或多个集合中的文档进行分析。</p><p>MongoDB 的聚合框架基于管道的概念：首先从集合中获取到输入，然后将输入的文档传递到一个或多个阶段，每个阶段都将之前阶段输出的内容作为输入，最终得到一个聚合结果作为输出。</p><p><img class=lazyload src=/svg/loading.min.svg data-src=assets/%e8%81%9a%e5%90%88%e7%ae%a1%e9%81%93.png data-srcset="assets/%e8%81%9a%e5%90%88%e7%ae%a1%e9%81%93.png, assets/%e8%81%9a%e5%90%88%e7%ae%a1%e9%81%93.png 1.5x, assets/%e8%81%9a%e5%90%88%e7%ae%a1%e9%81%93.png 2x" data-sizes=auto alt=assets/聚合管道.png title=聚合管道></p><p>上面的图是一个比较宽泛的管道流程图。这里展示一个 MongoDB 聚合语句映射到管道之后的情况：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=assets/%e8%81%9a%e5%90%88%e6%b5%81%e7%a8%8b%e5%9b%be%e7%a4%ba.png data-srcset="assets/%e8%81%9a%e5%90%88%e6%b5%81%e7%a8%8b%e5%9b%be%e7%a4%ba.png, assets/%e8%81%9a%e5%90%88%e6%b5%81%e7%a8%8b%e5%9b%be%e7%a4%ba.png 1.5x, assets/%e8%81%9a%e5%90%88%e6%b5%81%e7%a8%8b%e5%9b%be%e7%a4%ba.png 2x" data-sizes=auto alt=assets/聚合流程图示.png title=聚合流程图示></p><p>在这里可以看得出，<code>aggregate([{}, {}])</code> 是一个聚合语句，在函数的数组中，每一个对象都是一个阶段，<code>$match</code> 应该就是一个筛选文档的阶段，<code>$group</code> 应该就是一个分组汇总的阶段。</p><h2 id=管道阶段>管道阶段</h2><p>使用聚合框架最重要的就是熟悉操作的语法，以及将这些语法构建成管道当中的阶段。</p><p>在 MongoDB 聚合框架中，每一个阶段都必须要规定一个特定的阶段运算符，这些阶段运算符表明了阶段的执行规则，可以到 <a href=https://www.mongodb.com/docs/manual/reference/operator/aggregation-pipeline/ target=_blank rel="noopener noreffer">官方文档</a> 上查看更多、更详细的内容。</p><h3 id=常见操作>常见操作</h3><p>最常见的操作应该是能与普通查询语句对应上的操作，如查询、投影、排序、跳过、限制等等。虽然这些在一个 <code>find()</code> 语句中就能实现。</p><p>最常使用的操作就是查询，也可以说是筛选、过滤，在聚合框架中使用 <code>$match</code> 来表明这是一个筛选文档的阶段。如下是其使用语法：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=p>{</span> <span class=nx>$match</span><span class=o>:</span> <span class=p>{</span> <span class=o>&lt;</span><span class=nx>query</span><span class=o>&gt;</span> <span class=p>}</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>第二个则是投影，这个阶段可以修改输入文档的结构，通常是重命名、增加、删除属性，也可以通过表达式创建计算结果以及嵌套文档。如下是其使用语法：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=c1>// &lt;field&gt;: &lt;1 or true&gt;
+</span></span></span><span class=line><span class=cl><span class=c1>// &lt;field&gt;: &lt;0 or false&gt;
+</span></span></span><span class=line><span class=cl><span class=c1>// &lt;field&gt;: &lt;expression&gt;
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> <span class=nx>$project</span><span class=o>:</span> <span class=p>{</span> <span class=o>&lt;</span><span class=nx>specification</span><span class=p>(</span><span class=nx>s</span><span class=p>)</span><span class=o>&gt;</span> <span class=p>}</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>排序、跳过、限制都比较容易理解，实际上可以与 <code>find()</code> 结果的游标支持的函数做联系。如下是其使用语法：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=c1>// 排序
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> <span class=nx>$sort</span><span class=o>:</span> <span class=p>{</span> <span class=o>&lt;</span><span class=nx>field1</span><span class=o>&gt;:</span> <span class=o>&lt;</span><span class=nx>sort</span> <span class=nx>order</span><span class=o>&gt;</span><span class=p>,</span> <span class=o>&lt;</span><span class=nx>field2</span><span class=o>&gt;:</span> <span class=o>&lt;</span><span class=nx>sort</span> <span class=nx>order</span><span class=o>&gt;</span> <span class=p>...</span> <span class=p>}</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// 跳过
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> <span class=nx>$skip</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>positive</span> <span class=mi>64</span><span class=o>-</span><span class=nx>bit</span> <span class=nx>integer</span><span class=o>&gt;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// 限制
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> <span class=nx>$limit</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>positive</span> <span class=mi>64</span><span class=o>-</span><span class=nx>bit</span> <span class=nx>integer</span><span class=o>&gt;</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>上述 5 个阶段是最常用的阶段，在使用时需要注重它们的效率，一般会使用这样的顺序去构建管道：</p><ol><li>通过筛选语句过滤指定集合，得到符合要求的文档列表；</li><li>如果排序非常重要，这一个阶段需要在过滤文档之后；</li><li>如果需要做分页功能，应该是先执行跳过的阶段，然后再到限制的阶段；</li><li>最后，执行投影阶段（进入投影阶段的文档应该尽量少）。</li></ol><h3 id=更多操作---投影>更多操作 - 投影</h3><p>投影阶段一个比较大的作用就是，限制下一步的文档字段数量，也就是删除属性，如下是使用方式：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=c1>// 不返回 _id 字段
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> <span class=nx>$project</span><span class=o>:</span> <span class=p>{</span> <span class=nx>_id</span><span class=o>:</span> <span class=mi>0</span> <span class=p>}</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// 不返回指定的 field 字段
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> <span class=nx>$project</span><span class=o>:</span> <span class=p>{</span> <span class=o>&lt;</span><span class=nx>field</span><span class=o>&gt;:</span> <span class=mi>0</span> <span class=p>}</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>删除属性是黑名单的功能，投影阶段也支持白名单的功能，即返回列表内的字段，如下是使用方式：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=c1>// 返回指定的 field 字段
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> <span class=nx>$project</span><span class=o>:</span> <span class=p>{</span> <span class=o>&lt;</span><span class=nx>field</span><span class=o>&gt;:</span> <span class=mi>1</span> <span class=p>}</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>前两个功能是比较好理解的，但投影阶段所能做的远不止如此，还有很多其他的功能（投影阶段支持大部分条件组），这里做个简单举例：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=c1>// 将 author 嵌套文档下 last 属性赋值给 lastName 属性
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> <span class=nx>$project</span><span class=o>:</span> <span class=p>{</span> <span class=nx>lastName</span><span class=o>:</span> <span class=s2>&#34;$author.last&#34;</span> <span class=p>}</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// 上述的功能里，对于嵌套文档和内嵌数组返回的结果是不一样的，数组会继承下来
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// 投影支持类似于三元运算的表达式
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> <span class=nx>$project</span><span class=o>:</span> <span class=p>{</span> <span class=nx>lastName</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>$cond</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=o>:</span> <span class=p>{</span> <span class=nx>$eq</span><span class=o>:</span> <span class=p>[</span> <span class=s2>&#34;&#34;</span><span class=p>,</span> <span class=s2>&#34;$author.last&#34;</span> <span class=p>]</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=nx>then</span><span class=o>:</span> <span class=s2>&#34;$$REMOVE&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=o>:</span> <span class=s2>&#34;$author.last&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span> <span class=p>}</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=更多操作---展开>更多操作 - 展开</h3><p>在处理数组时，一个比较常见的操作是为数组中的每一个元素形成一个输出文档。</p><p>一个实际的例子就是，一件衣服在库存中有 S、M、L 三个尺寸，而这三个尺寸会存储在同一个数组字段当中，当我们聚合时想要将这一条文档展开成三个文档，一个尺寸对应一个文档。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=c1>// 原始文档
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;clothesId&#34;</span><span class=o>:</span> <span class=s2>&#34;123456&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;sizeList&#34;</span><span class=o>:</span> <span class=p>[</span><span class=s2>&#34;S&#34;</span><span class=p>,</span> <span class=s2>&#34;M&#34;</span><span class=p>,</span> <span class=s2>&#34;L&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 展开后的文档
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;clothesId&#34;</span><span class=o>:</span> <span class=s2>&#34;123456&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;sizeList&#34;</span><span class=o>:</span> <span class=s2>&#34;S&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;clothesId&#34;</span><span class=o>:</span> <span class=s2>&#34;123456&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;sizeList&#34;</span><span class=o>:</span> <span class=s2>&#34;M&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;clothesId&#34;</span><span class=o>:</span> <span class=s2>&#34;123456&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;sizeList&#34;</span><span class=o>:</span> <span class=s2>&#34;L&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>聚合过程中，展开阶段的语法是：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=p>{</span> <span class=nx>$unwind</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>field</span> <span class=nx>path</span><span class=o>&gt;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// 上述衣服的例子中，可以用以下语句来展开
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> <span class=nx>$unwind</span><span class=o>:</span> <span class=s2>&#34;$sizeList&#34;</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=更多操作---分组>更多操作 - 分组</h3><p>分组是聚合管道中举足轻重的一个阶段，这里的分组可以看作是 SQL 的 <code>GOURP BY</code> 语句，其能为聚合功能带来非常大的可能性。</p><p>分组阶段使用了 <code>$group</code> 运算符，支持使用一个键或多个键将输入的文档进行分组，其语法如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>$group</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 分组的标识
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>_id</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>expression</span><span class=o>&gt;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=o>&lt;</span><span class=nx>field1</span><span class=o>&gt;:</span> <span class=p>{</span> <span class=o>&lt;</span><span class=nx>accumulator1</span><span class=o>&gt;</span> <span class=o>:</span> <span class=o>&lt;</span><span class=nx>expression1</span><span class=o>&gt;</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=p>...</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>其中 <code>_id</code> 是必须的，可以简单指定分组的键，也可以使用条件组做处理后生成自定义键。</p><p>可选的 <code>&lt;field></code> 是分组后需要展示的键，并且可以指定条件组来决定它们的值是什么。</p><p>尤其是，MongoDB 提供了累加器可以实现复杂的功能，如求和、平均值、最大值、最小值等等。</p><p>这里有个对集合求和的例子，也是最简单的使用：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>$group</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 对类型进行分组
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>_id</span><span class=o>:</span> <span class=s2>&#34;type&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 这里是求和，一个文档记作 1 个，即对同类型的文档进行计数
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>count</span><span class=o>:</span> <span class=p>{</span> <span class=nx>$sum</span><span class=o>:</span> <span class=mi>1</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=更多操作---入库>更多操作 - 入库</h3><p>顾名思义，入库需要作为管道中最后的阶段，将管道生成的文档写入集合中。</p><p>聚合框架提供了 <code>$out</code> 和 <code>$merge</code> 两个运算符标识入库阶段，其中 <code>$merge</code> 是在 4.2 版本中引入的。这两个操作符的语法如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=c1>// 指定数据库和集合，会直接覆盖
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> <span class=nx>$out</span><span class=o>:</span> <span class=p>{</span> <span class=nx>db</span><span class=o>:</span> <span class=s2>&#34;&lt;output-db&gt;&#34;</span><span class=p>,</span> <span class=nx>coll</span><span class=o>:</span> <span class=s2>&#34;&lt;output-collection&gt;&#34;</span> <span class=p>}</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 配置更加丰富
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> <span class=nx>$merge</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 指定数据库和集合
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>into</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>collection</span><span class=o>&gt;</span> <span class=o>-</span><span class=nx>or</span><span class=o>-</span> <span class=p>{</span> <span class=nx>db</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>db</span><span class=o>&gt;</span><span class=p>,</span> <span class=nx>coll</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>collection</span><span class=o>&gt;</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 确定唯一标识与集合中做匹配
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>on</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>identifier</span> <span class=nx>field</span><span class=o>&gt;</span> <span class=o>-</span><span class=nx>or</span><span class=o>-</span> <span class=p>[</span> <span class=o>&lt;</span><span class=nx>identifier</span> <span class=nx>field1</span><span class=o>&gt;</span><span class=p>,</span> <span class=p>...],</span>  <span class=c1>// Optional
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 设定变量
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kd>let</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>variables</span><span class=o>&gt;</span><span class=p>,</span>                                         <span class=c1>// Optional
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 如果标识存在时处理文档的方式
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>whenMatched</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>replace</span><span class=o>|</span><span class=nx>keepExisting</span><span class=o>|</span><span class=nx>merge</span><span class=o>|</span><span class=nx>fail</span><span class=o>|</span><span class=nx>pipeline</span><span class=o>&gt;</span><span class=p>,</span>  <span class=c1>// Optional
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 如果标识不存在时处理文档的方式
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>whenNotMatched</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>insert</span><span class=o>|</span><span class=nx>discard</span><span class=o>|</span><span class=nx>fail</span><span class=o>&gt;</span>                     <span class=c1>// Optional
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>如果可以的话，建议使用 <code>$merge</code> 作为写入集合的首选方式，其功能更多。</p><p>当然，其真正的优势是，可以按照按需生成的物化视图（materialized view），在管道运行的阶段，输出到集合的内容会进行增量更新。</p><h2 id=条件组累加器>条件组累加器</h2><p>在一些阶段操作中，MongoDB 支持使用累加器来增强聚合功能，这里说的累加器泛指求和、平均值、最大值、最小值等功能的操作符。</p><h3 id=算术运算>算术运算</h3><p>这里的算术运算不是统称的四则运算，指的是与数学相关的运算，如平均值、求和等。</p><p><code>$avg</code> 累加器用于计算平均值，通过是直接指定一个键名即可，使用 <code>{ $avg: "$keyName" }</code> 这样的语法。</p><p><code>$sum</code> 累加器用于计算指定键的和，也是直接指定一个键名即可，使用 <code>{ $sum: "$keyName" }</code> 这样的语法。</p><h3 id=最值运算>最值运算</h3><p>累加器支持的最值包括这些：最小值、最大值、最大的 n 个值。</p><p>最小值和最大值的理解都比较容易，使用也比较容易。最小值使用了 <code>{ $min: "$keyName" }</code> 这样的语法，最大值使用了 <code>{ $max: "$keyName" }</code> 这样的语法。</p><p>最大的 n 个值是在 5.2 版本新增的累加器，其作用是通过指定输入的键，得到这些键值中排序后最大的 n 个值，其语法如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>$maxN</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 指定键名  input: &#34;$score&#34;
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>input</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>expression</span><span class=o>&gt;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 指定数量  n: 3
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>n</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>expression</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=数组提取>数组提取</h3><p>这里的数组提取指的是提取数组中的某个元素，现在能支持到的就是提取出数组中的前 n 个元素、后 n 个元素。</p><p>在这里可以使用 <code>$first</code>、<code>$firstN</code>、<code>$last</code>、<code>$lastN</code> 这样的运算符，它们的语法分别如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=p>{</span> <span class=nx>$first</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>expression</span><span class=o>&gt;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>$firstN</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>input</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>expression</span><span class=o>&gt;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>n</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>expression</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>{</span> <span class=nx>$last</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>expression</span><span class=o>&gt;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>$lastN</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>input</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>expression</span><span class=o>&gt;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>n</span><span class=o>:</span> <span class=o>&lt;</span><span class=nx>expression</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=其他运算>其他运算</h3><p>除了上述的累加器，聚合框架还有非常多其他的累加器，这里简单列一下：</p><ul><li><code>$accumulator</code>: 返回自定义累加器函数的结果</li><li><code>$addToSet</code>: 返回一个无重复值的数组</li><li><code>$bottom</code>: 返回指定排序规则后最后 1 个元素</li><li><code>$bottomN</code>: 返回指定排序规则后最后 n 个元素</li><li><code>$count</code>: 返回文档的计数</li><li><code>$mergeObjects</code>: 返回合并多个对象之后的结果</li><li><code>$push</code>: 返回一个可以有重复值的数组</li><li><code>$stdDevPop</code>: 返回输入值的总体标准差</li><li><code>$stdDevSamp</code>: 返回输入值的样本标准差</li></ul><p>这些累加器都有各自的用法，使用得当可实现非常强大的数据分析功能，完整的内容可以到 <a href=https://www.mongodb.com/docs/manual/reference/operator/aggregation/group/#std-label-accumulators-group target=_blank rel="noopener noreffer">官方文档</a> 上查看。</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2022-11-24</span></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-markdown href=/posts/database/mongodb-aggregate-query.md target=_blank>阅读原始文档</a></span></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/nosql.html>NoSQL</a>,&nbsp;<a href=/tags/mongodb.html>MongoDB</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/database/mongodb-index-knowledge.html class=prev rel=prev title="MongoDB - 索引知识"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>MongoDB - 索引知识</a></div></div><div id=comments><div id=giscus class=comment></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app>Giscus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.106.0">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=/ target=_blank>翔仔</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br><span class=icp>粤ICP备2021076569号</span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.7b0408f98c705b0bc4a799d0202fa56eb3205ac5921eabd9361c0b6788f342f09cb993017c67db1e9a9cc94773fbd5719a10c007bda24312630eb81919b8b8a1.js integrity="sha512-ewQI+YxwWwvEp5nQIC+lbrMgWsWSHqvZNhwLZ4jzQvCcuZMBfGfbHpqcyUdz+9VxmhDAB72iQxJjDrgZGbi4oQ=="></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.918bdd059e2c518e24c32fb5fd89144a49778f21f2166db93bf1e2ed311b3589660feb5777210257aee209f6d8bdde8c296883e34ff8bf4d5338f4be53132976.js integrity="sha512-kYvdBZ4sUY4kwy+1/YkUSkl3jyHyFm25O/Hi7TEbNYlmD+tXdyECV67iCfbYvd6MKWiD40/4v01TOPS+UxMpdg=="></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript src=/js/baidu_tongji.b0e0519286d388eaa2ec7550b8dbb0df7488e085ea2e108bbd48ca6171b7696797554da5cdf808f754e5dae27659b75d83402926da5821c7ae2409445a7b488e.js integrity="sha512-sOBRkobTiOqi7HVQuNuw33SI4IXqLhCLvUjKYXG3aWeXVU2lzfgI91Tl2uJ2Wbddg0ApJtpYIceuJAlEWntIjg=="></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{giscus:{category:"Announcements",categoryId:"DIC_kwDOIa-wYs4CSg4a",darkTheme:"dark",emitMetadata:"0",inputPosition:"top",lang:"zh-CN",lazyLoading:!0,lightTheme:"light",mapping:"pathname",reactionsEnabled:"1",repo:"fatedeity/blog-comment",repoId:"R_kgDOIa-wYg"}},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.2970a33d719df7cd89cebf586152b32a8ed30012227fa81b44282950146e0f595d1c733779e4d423dda1004bdcf707ee64d0fadc3d21229cd66b960788f84bdb.js integrity="sha512-KXCjPXGd982Jzr9YYVKzKo7TABIif6gbRCgpUBRuD1ldHHM3eeTUI92hAEvc9wfuZND63D0hIpzWa5YHiPhL2w=="></script></body></html>
